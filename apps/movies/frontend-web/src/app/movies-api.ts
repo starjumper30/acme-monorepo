@@ -20,10 +20,9 @@ export class MoviesApi {
 
   getAuthToken() {
     if (isPlatformServer(this.platformId)) {
+      // Getting the token server-side allows to pass secret server credentials to the token endpoint in the future if necessary
       return this.http
-        .get<{ token: string }>(
-          'https://0kadddxyh3.execute-api.us-east-1.amazonaws.com/auth/token' // TODO Move to env
-        )
+        .get<{ token: string }>(`${process.env['MOVIES_API_URL']}/auth/token`)
         .pipe(
           map((resp) => resp.token),
           tap((token) => {
