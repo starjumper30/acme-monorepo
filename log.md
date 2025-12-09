@@ -80,6 +80,11 @@ npx nx serve movies/frontend-web
 ### Configure/Test deploy to Firebase hosting
 - Create Firebase project in Firebase console (acme-movies-fb)
 - Upgrade project to Blaze plan
+- Set up App Hosting for the project
+  - link to the Github repo 
+  - set app root to /apps/movies/frontend-web
+  - have it deploy automatically from main branch
+- Test initial deployment
 
 
 ### Implement MVP
