@@ -122,9 +122,10 @@ duration, rating, etc.
 
 1. Implement and test angular service for movie search
    - get auth token
-   - make graphql call using apollo-angular client
+   - make a graphql call using apollo-angular client
      https://the-guild.dev/graphql/apollo-angular/docs/performance/server-side-rendering#server-side-rendering
      https://github.com/kamilkisiela/apollo-angular-ssr/tree/master
+   - flesh out the api service with all the calls needed to implement the MVP
 2. Create a component to display movie search results using a paginated table
 3. Create a filter component to allow users to filter search results by genre. This task is blocked by task 2 because the filter UI implementation may depend on which third-party table component is used in step 2.
 

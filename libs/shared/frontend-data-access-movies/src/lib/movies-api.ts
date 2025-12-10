@@ -8,71 +8,21 @@ import {
   TransferState,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
+import { DocumentNode } from 'graphql/language';
 import { map, of, tap } from 'rxjs';
 
 import { MOVIES_API_URI } from './movies-api-injection-tokens';
-
-const MOVIES_BY_GENRE = gql`
-  query MoviesByGenre($where: MovieFilterInput, $pagination: PaginationInput) {
-    movies(where: $where, pagination: $pagination) {
-      nodes {
-        title
-      }
-      pagination {
-        page
-        perPage
-        totalPages
-      }
-    }
-  }
-`;
-
-interface Genre {
-  id?: string;
-  title?: string;
-}
-interface Pagination {
-  page: number;
-  perPage: number;
-  totalPages: number;
-}
-interface Movie {
-  id?: string;
-  title?: string;
-  bestRating?: number;
-  datePublished?: string; //'2016-03-11'
-  directors?: string[];
-  duration?: string; //'PT1H43M';
-  genres?: Genre[];
-  mainActors?: string[];
-  posterUrl?: string;
-  rating?: string;
-  ratingValue?: number;
-  summary?: string;
-  worstRating?: number;
-  writers?: string[];
-}
-
-interface MoviesQueryResponse {
-  movies: {
-    nodes: Movie[];
-    pagination: Pagination;
-  };
-}
-
-interface PaginationVariables {
-  perPage?: number;
-  page?: number;
-}
-
-interface MoviesQueryVariables {
-  where?: {
-    genre?: string;
-    search?: string; // partial title search
-  };
-  pagination?: PaginationVariables;
-}
+import {
+  GenresQueryResponse,
+  GenresQueryVariables,
+  MovieFilterInput,
+  MoviesApiQueryResponse,
+  MoviesApiQueryVariables,
+  MoviesQueryResponse,
+  MoviesQueryVariables,
+} from './movies-schema';
+import { GENRES_GQL, MOVIES_GQL } from './movies-gql';
 
 @Injectable({
   providedIn: 'root',
@@ -104,24 +54,48 @@ export class MoviesApi {
     }
   }
 
-  moviesByGenre(genre: string, page = 1, perPage = 10) {
-    return this.apollo.watchQuery<MoviesQueryResponse, MoviesQueryVariables>({
-      query: MOVIES_BY_GENRE,
-      variables: {
-        where: {
-          genre,
-        },
-        pagination: {
-          perPage,
-          page,
-        },
-      },
-      context: {
-        headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${this.authToken()}`
-        ),
-      },
+  private context() {
+    return {
+      headers: new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.authToken()}`
+      ),
+    };
+  }
+
+  customQuery<
+    T extends MoviesApiQueryResponse,
+    V extends MoviesApiQueryVariables
+  >(query: DocumentNode, variables: V) {
+    return this.apollo.watchQuery<T, V>({
+      query,
+      variables,
+      context: this.context(),
     }).valueChanges;
+  }
+
+  genres() {
+    return this.customQuery<GenresQueryResponse, GenresQueryVariables>(
+      GENRES_GQL,
+      {}
+    );
+  }
+
+  movies(filter: MovieFilterInput = {}, page = 1, perPage = 10) {
+    return this.customQuery<MoviesQueryResponse, MoviesQueryVariables>(
+      MOVIES_GQL,
+      {
+        pagination: { perPage, page },
+        where: filter,
+      }
+    );
+  }
+
+  moviesByGenre(genre: string, page = 1, perPage = 10) {
+    return this.movies({ genre }, page, perPage);
+  }
+
+  moviesByTitleSearch(search: string, page = 1, perPage = 10) {
+    return this.movies({ search }, page, perPage);
   }
 }

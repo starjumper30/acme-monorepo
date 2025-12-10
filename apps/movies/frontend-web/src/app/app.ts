@@ -14,4 +14,5 @@ export class App {
   moviesAPI = inject(MoviesApi);
 
   movies = this.moviesAPI.moviesByGenre('action');
+  genres = this.moviesAPI.genres();
 }
