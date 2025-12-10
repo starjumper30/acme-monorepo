@@ -1,0 +1,26 @@
+{
+  "apphosting": [
+    {
+      "backendId": "movies-web",
+      "rootDir": "./apps/movies/frontend-web",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions"
+      ]
+    }
+  ],
+  "emulators": {
+    "apphosting": {
+      "port": 5002,
+      "rootDirectory": "./apps/movies/frontend-web",
+      "startCommand": "npx nx serve movies/frontend-web"
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}

@@ -1,5 +1,9 @@
 # See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Firebase emulator
+apphosting.local.yaml
+firebase-debug.log
+
 # compiled output
 dist
 tmp

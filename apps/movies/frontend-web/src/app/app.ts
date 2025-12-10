@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MoviesApi } from './movies-api';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { shareReplay, switchMap, tap } from 'rxjs';
 
 @Component({
-  imports: [RouterModule, AsyncPipe],
+  imports: [RouterModule, AsyncPipe, JsonPipe],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -12,5 +13,5 @@ import { AsyncPipe } from '@angular/common';
 export class App {
   moviesAPI = inject(MoviesApi);
 
-  token = this.moviesAPI.getAuthToken();
+  movies = this.moviesAPI.moviesByGenre('action');
 }

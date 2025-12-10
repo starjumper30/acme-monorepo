@@ -12,7 +12,7 @@
       "options": {
         "outputPath": "dist/apps/movies/frontend-web",
         "browser": "apps/movies/frontend-web/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [],
         "tsConfig": "apps/movies/frontend-web/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -80,16 +80,6 @@
       "options": {
         "jestConfig": "apps/movies/frontend-web/jest.config.ts",
         "tsConfig": "apps/movies/frontend-web/tsconfig.spec.json"
-      }
-    },
-    "serve-static": {
-      "continuous": true,
-      "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "movies/frontend-web:build",
-        "port": 4200,
-        "staticFilePath": "dist/apps/movies/frontend-web/browser",
-        "spa": true
       }
     }
   }
