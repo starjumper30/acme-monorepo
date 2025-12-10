@@ -1,17 +1,21 @@
 # Project Log
 
 ## Evaluate requirements and choose a tech stack
+
 ### Tools I'm most familiar with for building this type of app
+
 - Angular for frontend.
 - Nx for monorepo management.
 
 ### MVP needs
+
 - Doesn't require any persistence layer because data is being pulled from a third party API.
 - Doesn't require user authentication because it is stateless and calling an API with a server API token that can be retrieved without any credentials.
 - No security + no persistence **means no need for a backend**
 - **Could deploy the MVP as a single Angular app to any static hosting provider.**
 
 ### What I might need for future features
+
 - User authentication and a persistence layer to store list of favorite movies.
 - Improved handling of auth tokens if we switch to a more secure movie API.
 - Server-side rendering for SEO and performance optimizations.
@@ -20,6 +24,7 @@
 - artifact management for rollback and repeatable deployments
 
 ### How do I satisfy the MVP requirements quickly and simply while also positioning the project for future requirements?
+
 - Use Nx to create a monorepo structure for our organization (acme).
   This sets us up for future growth, code reuse across projects, and good organization as this project grows.
   A nx workspace also supports a wide range of tools and frameworks that we might need to add in the future.
@@ -35,8 +40,10 @@
   - **Tradeoff summary: Cheap, easy, low maintenance way to add features using cloud-native services at the expense of vendor lock-in.**
 
 ## Get a workspace going
+
 ### Create an nx workspace with an angular app. See shell output below for choices made.
-Create the frontend-web app in a "movies" domain folder. 
+
+Create the frontend-web app in a "movies" domain folder.
 This sets us up for a mono-repo structure that can hold future projects for ACME corp as well as additional apps within the "movies" domain.
 
 ```shell
@@ -63,34 +70,66 @@ chris.hardin@VAL-US-100 starjumper30 % npx create-nx-workspace@latest
 ```
 
 ### Verify project settings in Webstorm IDE
+
 - verified IDE code quality settings
   - SonarCube
-  - Prettier
+  - Prettier on save
+  - eslint fix on save
 - verified AI assistance settings
   - Jetbrains AI Assistant
   - Nx AI agents and MCP
 - updated schematics in nx.json to use acme prefix and scss.
 - switched to zoneless angular bootstrap
 - tested serve on frontend-web app
+
 ```shell
 npx nx serve movies/frontend-web
 ```
+
 - commit apps as a starting point
 
-### Configure/Test deploy to Firebase hosting
+### Set up CI/CD with Firebase hosting
+
 - Create Firebase project in Firebase console (acme-movies-fb)
 - Upgrade project to Blaze plan
 - Set up App Hosting for the project
-  - link to the Github repo 
+  - link to the Github repo
   - set app root to /apps/movies/frontend-web
   - have it deploy automatically from main branch
-- Test initial deployment
+- Verify initial deployment at https://movies-web--acme-movies-fb.us-central1.hosted.app/
 
+### Setup Local Development
 
-### Implement MVP
+- install and configure firebase cli (https://firebase.google.com/docs/app-hosting/emulate)
+- run `firebase emulators:start` to serve the app locally
+- The emulator errors out but the app is still being served properly. Have to run `npx kill-port 4200` to shutdown the angular dev server when you are done.
 
+## Implement MVP
 
-### Brainstorm Additional Features
+MVP requirements:
+
+```
+As a user,
+● I can search for movies and see a paginated list of results
+● I can filter search results by genre
+● I can navigate through the next and previous pages of the paginated results
+● I see the total count of search results
+● I see notable information for each search result, such as the summary, poster,
+duration, rating, etc.
+```
+
+### High-level tasks in order
+
+1. Implement and test angular service for movie search
+   - get auth token
+   - make graphql call using apollo-angular client
+     https://the-guild.dev/graphql/apollo-angular/docs/performance/server-side-rendering#server-side-rendering
+     https://github.com/kamilkisiela/apollo-angular-ssr/tree/master
+2. Create a component to display movie search results using a paginated table
+3. Create a filter component to allow users to filter search results by genre. This task is blocked by task 2 because the filter UI implementation may depend on which third-party table component is used in step 2.
+
+## Brainstorm Additional Features
+
 - AI integration for movie recommendations
 - User profile features
   - Favorites list
@@ -102,3 +141,13 @@ npx nx serve movies/frontend-web
 - Have users rate movies, provide reviews
 - List new releases
 - Show ads for popular movies to generate revenue
+- Use firebase analytics to track usage
+
+## MISC TODO
+
+- make sure we are deploying a production build of the app
+- tests
+
+## AI Prompts
+
+- Generate a jest unit test for the Angular 21 component that is open in the editor, using Angular TestBed.

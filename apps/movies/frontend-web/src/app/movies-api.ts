@@ -1,18 +1,17 @@
+import { isPlatformServer } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   inject,
   Injectable,
   makeStateKey,
   PLATFORM_ID,
-  signal,
   TransferState,
 } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { isPlatformServer } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Apollo, gql } from 'apollo-angular';
-import { map, Observable, of, tap } from 'rxjs';
+import { map, of, tap } from 'rxjs';
 
 import { MOVIES_API_URI } from './movies-api-injection-tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 const MOVIES_BY_GENRE = gql`
   query MoviesByGenre($where: MovieFilterInput, $pagination: PaginationInput) {
@@ -70,7 +69,7 @@ interface PaginationVariables {
 interface MoviesQueryVariables {
   where?: {
     genre?: string;
-    search?: string;
+    search?: string; // partial title search
   };
   pagination?: PaginationVariables;
 }
@@ -106,7 +105,7 @@ export class MoviesApi {
   }
 
   moviesByGenre(genre: string, page = 1, perPage = 10) {
-    return this.apollo.watchQuery<MoviesQueryResponse>({
+    return this.apollo.watchQuery<MoviesQueryResponse, MoviesQueryVariables>({
       query: MOVIES_BY_GENRE,
       variables: {
         where: {

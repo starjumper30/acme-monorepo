@@ -1,3 +1,5 @@
+import { isPlatformBrowser } from '@angular/common';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import {
   ApplicationConfig,
   inject,
@@ -7,17 +9,16 @@ import {
   provideZonelessChangeDetection,
   TransferState,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { appRoutes } from './app.routes';
 import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-import { InMemoryCache, NormalizedCacheObject } from '@apollo/client';
-import { isPlatformBrowser } from '@angular/common';
+
+import { appRoutes } from './app.routes';
 import {
   MOVIES_API_URI,
   MOVIES_APOLLO_CACHE,

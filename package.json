@@ -2,7 +2,14 @@
   "name": "@acme/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint": "npx nx affected --base=origin/main --target=lint --max-warnings 0 --parallel --fix",
+    "format": "npx nx format:write --base=origin/main",
+    "build": "npx nx affected --base=origin/main --target=build --parallel",
+    "test": "npx nx affected --base=origin/main --target=test --parallel",
+    "e2e": "npx nx affected --base=origin/main --target=e2e --parallel=1",
+    "hygiene": "npm run lint && npm run format && npm run build && npm run test"
+  },
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "~20.3.0",
