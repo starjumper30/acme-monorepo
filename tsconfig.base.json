@@ -15,11 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@acme/shared/frontend-data-access-movies": [
-        "libs/shared/frontend-data-access-movies/src/index.ts"
-      ],
       "@acme/movies/frontend-feature-movie-search": [
         "libs/movies/frontend-feature-movie-search/src/index.ts"
+      ],
+      "@acme/shared/frontend-data-access-apollo": [
+        "libs/shared/frontend-data-access-apollo/src/index.ts"
+      ],
+      "@acme/shared/frontend-data-access-movies": [
+        "libs/shared/frontend-data-access-movies/src/index.ts"
       ]
     }
   },

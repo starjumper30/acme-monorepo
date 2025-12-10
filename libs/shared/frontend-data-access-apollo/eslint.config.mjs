@@ -31,11 +31,4 @@ export default [
     // Override or add rules here
     rules: {},
   },
-  {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
-    },
-  },
 ];

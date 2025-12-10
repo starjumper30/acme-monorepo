@@ -152,3 +152,5 @@ duration, rating, etc.
 ## AI Prompts
 
 - Generate a jest unit test for the Angular 21 component that is open in the editor, using Angular TestBed.
+- Generate a jest unit test for the Angular 21 service that is open in the editor, using Angular TestBed.
+- generate jest unit test for current open file

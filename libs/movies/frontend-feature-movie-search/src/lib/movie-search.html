@@ -1,0 +1,24 @@
+<h2>Genres</h2>
+@if (isLoadingGenres()) {
+<p>Loading...</p>
+} @else if (genresLoadingError()){ {{genresLoadingError()?.message}} } @else {
+<label for="genre">Genre:</label>
+<select id="genre" [formControl]="selectedGenre">
+  <option></option>
+  @for (genre of genres(); track genre.title) {
+  <option>{{genre.title}}</option>
+  }
+</select>
+}
+
+<h2>Movies</h2>
+@if (isLoadingMovies()) {
+<p>Loading...</p>
+} @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} } @else {
+<ul>
+  @for (movie of movies(); track movie.title) {
+
+  <li>{{movie.title}}</li>
+  }
+</ul>
+}

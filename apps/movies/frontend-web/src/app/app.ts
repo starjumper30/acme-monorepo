@@ -1,18 +1,10 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { MoviesApi } from '@acme/shared/frontend-data-access-movies';
-
 @Component({
-  imports: [RouterModule, AsyncPipe, JsonPipe],
+  imports: [RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
-  moviesAPI = inject(MoviesApi);
-
-  movies = this.moviesAPI.moviesByGenre('action');
-  genres = this.moviesAPI.genres();
-}
+export class App {}
