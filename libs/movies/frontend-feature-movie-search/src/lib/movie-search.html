@@ -1,24 +1,34 @@
-<h2>Genres</h2>
-@if (isLoadingGenres()) {
-<p>Loading...</p>
-} @else if (genresLoadingError()){ {{genresLoadingError()?.message}} } @else {
-<label for="genre">Genre:</label>
+<label for="genre">Genre: </label>
 <select id="genre" [formControl]="selectedGenre">
-  <option></option>
+  <option [value]="''">All</option>
   @for (genre of genres(); track genre.title) {
   <option>{{genre.title}}</option>
   }
 </select>
-}
 
-<h2>Movies</h2>
 @if (isLoadingMovies()) {
 <p>Loading...</p>
 } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} } @else {
-<ul>
-  @for (movie of movies(); track movie.title) {
 
-  <li>{{movie.title}}</li>
+<p>Viewing {{pagination().page}} of {{pagination().totalPages}} pages</p>
+<mat-grid-list cols="3" rowHeight="2:1">
+  @for (movie of movies(); track movie.title) {
+  <mat-grid-tile>
+    <mat-card class="movie-card" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>{{movie.title}}</mat-card-title>
+          <mat-card-subtitle>something else</mat-card-subtitle>
+          <img
+            mat-card-md-image
+            [src]="movie.posterUrl"
+            alt="Poster for {{movie.title}}"
+          />
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content> {{movie.summary}} </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
   }
-</ul>
+</mat-grid-list>
 }

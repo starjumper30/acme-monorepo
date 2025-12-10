@@ -11,6 +11,15 @@ import {
 } from '@acme/shared/frontend-data-access-movies';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
+  MatCard,
+  MatCardContent,
+  MatCardHeader,
+  MatCardMdImage,
+  MatCardSubtitle,
+  MatCardTitle,
+  MatCardTitleGroup,
+} from '@angular/material/card';
+import {
   catchError,
   distinctUntilChanged,
   of,
@@ -19,10 +28,22 @@ import {
 } from 'rxjs';
 
 import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 
 @Component({
   selector: 'acme-movie-search',
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatGridTile,
+    MatGridList,
+    MatCardMdImage,
+    MatCardTitleGroup,
+    MatCardSubtitle,
+  ],
   templateUrl: './movie-search.html',
   styleUrl: './movie-search.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +67,7 @@ export class MovieSearch {
       startWith(''),
       distinctUntilChanged(),
       switchMap((value) =>
-        this.moviesAPI.movies(value ? { genre: value } : undefined).pipe(
+        this.moviesAPI.movies(value ? { genre: value } : undefined, 1, 9).pipe(
           catchError((error) => {
             console.log(error);
             return of({
@@ -61,6 +82,10 @@ export class MovieSearch {
   );
 
   movies = computed(() => this.movieSignals.data()?.movies?.nodes ?? []);
+  pagination = computed(
+    () =>
+      this.movieSignals.data()?.movies?.pagination ?? { totalPages: 0, page: 1 }
+  );
   isLoadingMovies = this.movieSignals.isLoading;
   moviesLoadingError = this.movieSignals.error;
 

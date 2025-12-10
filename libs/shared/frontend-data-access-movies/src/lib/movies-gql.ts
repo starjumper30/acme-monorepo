@@ -12,6 +12,7 @@ export const MOVIES_GQL = gql<MoviesQueryResponse, MoviesQueryVariables>`
       nodes {
         title
         summary
+        posterUrl
         genres {
           title
         }

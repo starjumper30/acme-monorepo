@@ -126,11 +126,12 @@ duration, rating, etc.
      https://the-guild.dev/graphql/apollo-angular/docs/performance/server-side-rendering#server-side-rendering
      https://github.com/kamilkisiela/apollo-angular-ssr/tree/master
    - flesh out the api service with all the calls needed to implement the MVP
-2. Create a component to display movie search results using a paginated table
-3. Create a filter component to allow users to filter search results by genre. This task is blocked by task 2 because the filter UI implementation may depend on which third-party table component is used in step 2.
+2. Create a component to display movie search results by genre
+3. Add pagination to the movie search results component
 
 ## Brainstorm Additional Features
 
+- Switch between tile view and grid view
 - AI integration for movie recommendations
 - User profile features
   - Favorites list
@@ -148,6 +149,7 @@ duration, rating, etc.
 
 - make sure we are deploying a production build of the app
 - tests
+- lint and test in ci/cd pipeline
 
 ## AI Prompts
 
