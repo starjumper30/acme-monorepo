@@ -1,5 +1,5 @@
 {
-  "name": "movies/frontend-web",
+  "name": "movies-frontend-web",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
@@ -57,10 +57,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "movies/frontend-web:build:production"
+          "buildTarget": "movies-frontend-web:build:production"
         },
         "development": {
-          "buildTarget": "movies/frontend-web:build:development"
+          "buildTarget": "movies-frontend-web:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -68,7 +68,7 @@
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
       "options": {
-        "buildTarget": "movies/frontend-web:build"
+        "buildTarget": "movies-frontend-web:build"
       }
     },
     "lint": {

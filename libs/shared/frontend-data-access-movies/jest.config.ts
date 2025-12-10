@@ -1,8 +1,9 @@
 export default {
-  displayName: 'movies-frontend-web',
+  displayName: 'shared-frontend-data-access-movies',
   preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../coverage/apps/movies/frontend-web',
+  coverageDirectory:
+    '../../../coverage/libs/shared/frontend-data-access-movies',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

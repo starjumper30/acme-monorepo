@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@acme/shared/frontend-data-access-movies": [
+        "libs/shared/frontend-data-access-movies/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

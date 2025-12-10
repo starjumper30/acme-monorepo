@@ -16,7 +16,7 @@
     "apphosting": {
       "port": 5002,
       "rootDirectory": "./apps/movies/frontend-web",
-      "startCommand": "npx nx serve movies/frontend-web"
+      "startCommand": "npx nx serve movies-frontend-web"
     },
     "ui": {
       "enabled": true

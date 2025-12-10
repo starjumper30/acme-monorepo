@@ -18,11 +18,12 @@ import { InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 
-import { appRoutes } from './app.routes';
 import {
   MOVIES_API_URI,
   MOVIES_APOLLO_CACHE,
-} from './movies-api-injection-tokens';
+} from '@acme/shared/frontend-data-access-movies';
+
+import { appRoutes } from './app.routes';
 
 const MOVIES_APOLLO_STATE_KEY =
   makeStateKey<NormalizedCacheObject>('apollo.state');

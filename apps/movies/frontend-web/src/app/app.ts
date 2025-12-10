@@ -2,7 +2,7 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { MoviesApi } from './movies-api';
+import { MoviesApi } from '@acme/shared/frontend-data-access-movies';
 
 @Component({
   imports: [RouterModule, AsyncPipe, JsonPipe],

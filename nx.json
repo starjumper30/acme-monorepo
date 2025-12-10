@@ -76,6 +76,9 @@
       "unitTestRunner": "jest",
       "prefix": "acme",
       "style": "scss"
+    },
+    "@nx/angular:component": {
+      "style": "scss"
     }
   }
 }

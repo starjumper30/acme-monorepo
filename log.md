@@ -83,7 +83,7 @@ chris.hardin@VAL-US-100 starjumper30 % npx create-nx-workspace@latest
 - tested serve on frontend-web app
 
 ```shell
-npx nx serve movies/frontend-web
+npx nx serve movies-frontend-web
 ```
 
 - commit apps as a starting point

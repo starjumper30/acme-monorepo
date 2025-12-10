@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { MoviesApi } from '@acme/shared/frontend-data-access-movies';
+
 import { App } from './app';
-import { MoviesApi } from './movies-api';
 
 describe('App', () => {
   let moviesApiMock: jest.Mocked<MoviesApi>;
