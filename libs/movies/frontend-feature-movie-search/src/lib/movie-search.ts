@@ -2,13 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
+  signal,
 } from '@angular/core';
-import {
-  GenresQueryResponse,
-  MoviesApi,
-  MoviesQueryResponse,
-} from '@acme/shared/frontend-data-access-movies';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCard,
@@ -22,16 +20,26 @@ import {
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import {
   catchError,
+  combineLatest,
+  debounceTime,
   distinctUntilChanged,
+  map,
   of,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs';
 
 import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
+import {
+  GenresQueryResponse,
+  MoviesApi,
+  MoviesQueryResponse,
+} from '@acme/shared/frontend-data-access-movies';
 
 @Component({
   selector: 'acme-movie-search',
@@ -45,6 +53,7 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
     MatCardTitleGroup,
     MatCardSubtitle,
     MatFormFieldModule,
+    MatPaginatorModule,
     MatSelectModule,
     ReactiveFormsModule,
     MatInputModule,
@@ -57,7 +66,7 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
 export class MovieSearch {
   moviesAPI = inject(MoviesApi);
 
-  // TODO how do I get this call to be made only during the server-side rendering?
+  // TODO how do I get this call to be made only during the server-side rendering? (I think a failure is happening on the server-side call)
   private readonly genreSignals = apolloResultToSignals<GenresQueryResponse>(
     this.moviesAPI.genres()
   );
@@ -66,36 +75,68 @@ export class MovieSearch {
   isLoadingGenres = this.genreSignals.isLoading;
   genresLoadingError = this.genreSignals.error;
 
-  selectedGenre = new FormControl('');
+  selectedGenre = new FormControl({ value: '', disabled: true });
+  pageSettings = signal({ page: 1, perPage: 9 });
 
-  private readonly movieSignals = apolloResultToSignals<MoviesQueryResponse>(
-    this.selectedGenre.valueChanges.pipe(
-      startWith(''),
-      distinctUntilChanged(),
-      switchMap((value) =>
-        this.moviesAPI.movies(value ? { genre: value } : undefined, 1, 9).pipe(
+  private readonly genreObservable = this.selectedGenre.valueChanges.pipe(
+    startWith(''),
+    distinctUntilChanged()
+  );
+
+  totalMovies = toSignal(
+    this.genreObservable.pipe(
+      // reset to first page when genre changes
+      tap(() =>
+        this.pageSettings.update(({ perPage }) => ({ perPage, page: 1 }))
+      ),
+      switchMap((genre) =>
+        this.moviesAPI.movies(genre ? { genre } : undefined, 1, 1).pipe(
+          map((response) => response.data?.movies?.pagination?.totalPages ?? 0),
           catchError((error) => {
             console.log(error);
-            return of({
-              error,
-              loading: false,
-              data: undefined,
-            });
+            return of(0);
           })
         )
       )
     )
   );
 
-  movies = computed(() => this.movieSignals.data()?.movies?.nodes ?? []);
-  pagination = computed(
-    () =>
-      this.movieSignals.data()?.movies?.pagination ?? { totalPages: 0, page: 1 }
+  private readonly movieSignals = apolloResultToSignals<MoviesQueryResponse>(
+    combineLatest([
+      this.genreObservable.pipe(debounceTime(1)), // debounce here prevents a wasted call when user changes genre from a page other than page 1
+      toObservable(this.pageSettings),
+    ]).pipe(
+      switchMap(([genre, { page, perPage }]) =>
+        this.moviesAPI
+          .movies(genre ? { genre } : undefined, page, perPage)
+          .pipe(
+            catchError((error) => {
+              console.log(error);
+              return of({
+                error,
+                loading: false,
+                data: undefined,
+              });
+            })
+          )
+      )
+    )
   );
+
+  movies = computed(() => this.movieSignals.data()?.movies?.nodes ?? []);
+
   isLoadingMovies = this.movieSignals.isLoading;
   moviesLoadingError = this.movieSignals.error;
 
-  hasErrors = computed(
-    () => !!(this.genresLoadingError() || this.moviesLoadingError())
-  );
+  constructor() {
+    effect(() => {
+      if (!this.isLoadingGenres() && !this.genresLoadingError()) {
+        this.selectedGenre.enable();
+      }
+    });
+  }
+
+  protected onPageChange({ pageIndex, pageSize }: PageEvent) {
+    this.pageSettings.set({ page: pageIndex + 1, perPage: pageSize });
+  }
 }

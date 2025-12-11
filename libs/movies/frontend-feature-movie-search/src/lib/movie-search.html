@@ -8,11 +8,20 @@
       }
     </mat-select>
   </mat-form-field>
-  @if (isLoadingMovies()) {
+  <mat-paginator
+    [length]="totalMovies()"
+    [pageSize]="pageSettings().perPage"
+    [pageSizeOptions]="[6, 9, 30, 99]"
+    [pageIndex]="pageSettings().page - 1"
+    (page)="onPageChange($event)"
+    aria-label="Select page"
+  >
+  </mat-paginator>
+  @if(genresLoadingError()) {
+  <mat-error>{{genresLoadingError()?.message}}</mat-error>
+  } @if (isLoadingMovies()) {
   <p>Loading movies...</p>
-  } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} } @else {
-  <p>Viewing {{pagination().page}} of {{pagination().totalPages}} pages</p>
-  }
+  } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} }
 </div>
 
 <div class="movie-list">

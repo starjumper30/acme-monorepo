@@ -133,10 +133,11 @@ duration, rating, etc.
    - flesh out the api service with all the calls needed to implement the MVP
 2. Create a component to display movie search results by genre
 3. Add pagination to the movie search results component
+**4. Finish populating more details on movie cards**
 
 ## Brainstorm Additional Features
 
-- Test it on mobile/make it responsive
+- Test/optimize for mobile
 - Switch between tile view and grid view
 - click on movie to open full page route
 - AI integration for movie recommendations
@@ -153,8 +154,7 @@ duration, rating, etc.
 - Use firebase analytics to track usage
 
 ## MISC TODO
-
-- make sure we are deploying a production build of the app
+- figure out server side loading errors
 - tests
 - lint and test in ci/cd pipeline
 
