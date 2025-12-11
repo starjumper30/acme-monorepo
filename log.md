@@ -103,6 +103,11 @@ npx nx serve movies-frontend-web
 - install and configure firebase cli (https://firebase.google.com/docs/app-hosting/emulate)
 - run `firebase emulators:start` to serve the app locally
 - The emulator errors out but the app is still being served properly. Have to run `npx kill-port 4200` to shutdown the angular dev server when you are done.
+- If the firebase emulator is not working well enough, you can just set env variables manually and serve the app normally.
+```shell
+export MOVIES_API_URL='https://0kadddxyh3.execute-api.us-east-1.amazonaws.com'
+npx nx serve movies-frontend-web
+```
 
 ## Implement MVP
 
@@ -131,7 +136,9 @@ duration, rating, etc.
 
 ## Brainstorm Additional Features
 
+- Test it on mobile/make it responsive
 - Switch between tile view and grid view
+- click on movie to open full page route
 - AI integration for movie recommendations
 - User profile features
   - Favorites list

@@ -19,6 +19,10 @@ import {
   MatCardTitle,
   MatCardTitleGroup,
 } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import {
   catchError,
   distinctUntilChanged,
@@ -28,7 +32,6 @@ import {
 } from 'rxjs';
 
 import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 
 @Component({
   selector: 'acme-movie-search',
@@ -38,11 +41,14 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
     MatCardHeader,
     MatCardTitle,
     MatCardContent,
-    MatGridTile,
-    MatGridList,
     MatCardMdImage,
     MatCardTitleGroup,
     MatCardSubtitle,
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatChipsModule,
   ],
   templateUrl: './movie-search.html',
   styleUrl: './movie-search.scss',

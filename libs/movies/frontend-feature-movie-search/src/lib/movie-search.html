@@ -1,34 +1,47 @@
-<label for="genre">Genre: </label>
-<select id="genre" [formControl]="selectedGenre">
-  <option [value]="''">All</option>
-  @for (genre of genres(); track genre.title) {
-  <option>{{genre.title}}</option>
-  }
-</select>
+<mat-form-field>
+  <mat-label>Genre</mat-label>
+  <mat-select [formControl]="selectedGenre">
+    <mat-option>--</mat-option>
+    @for (genre of genres(); track genre.title) {
+      <mat-option [value]="genre.title">{{genre.title}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
 
 @if (isLoadingMovies()) {
 <p>Loading...</p>
 } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} } @else {
 
 <p>Viewing {{pagination().page}} of {{pagination().totalPages}} pages</p>
-<mat-grid-list cols="3" rowHeight="2:1">
+  <div class="movie-list">
   @for (movie of movies(); track movie.title) {
-  <mat-grid-tile>
     <mat-card class="movie-card" appearance="outlined">
       <mat-card-header>
         <mat-card-title-group>
           <mat-card-title>{{movie.title}}</mat-card-title>
-          <mat-card-subtitle>something else</mat-card-subtitle>
-          <img
-            mat-card-md-image
-            [src]="movie.posterUrl"
-            alt="Poster for {{movie.title}}"
-          />
+          <mat-card-subtitle>
+            Subtitle
+          </mat-card-subtitle>
+          @if (movie.posterUrl) {
+            <img
+              mat-card-md-image
+              [src]="movie.posterUrl"
+              alt="Poster for {{movie.title}}"
+            />
+          }
         </mat-card-title-group>
       </mat-card-header>
-      <mat-card-content> {{movie.summary}} </mat-card-content>
+      <mat-card-content>
+        <p>
+          {{movie.summary}}
+        </p>
+        <mat-chip-set aria-label="Genres">
+          @for (genre of movie?.genres; track genre) {
+            <mat-chip [highlighted]="genre.title === selectedGenre.value">{{genre.title}}</mat-chip>
+          }
+        </mat-chip-set>
+      </mat-card-content>
     </mat-card>
-  </mat-grid-tile>
   }
-</mat-grid-list>
+  </div>
 }
