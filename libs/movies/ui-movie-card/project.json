@@ -1,17 +1,17 @@
 {
-  "name": "shared-frontend-data-access-movies",
+  "name": "movies-ui-movie-card",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/shared/frontend-data-access-movies/src",
+  "sourceRoot": "libs/movies/ui-movie-card/src",
   "prefix": "acme",
   "projectType": "library",
-  "tags": ["type:frontend-data-access", "scope:shared"],
+  "tags": ["type:ui", "scope:movies"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/shared/frontend-data-access-movies/jest.config.ts",
-        "tsConfig": "libs/shared/frontend-data-access-movies/tsconfig.spec.json"
+        "jestConfig": "libs/movies/ui-movie-card/jest.config.ts",
+        "tsConfig": "libs/movies/ui-movie-card/tsconfig.spec.json"
       }
     },
     "lint": {

@@ -15,14 +15,16 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@acme/movies/frontend-data-access-movies": [
+        "libs/movies/frontend-data-access-movies/src/index.ts"
+      ],
       "@acme/movies/frontend-feature-movie-search": [
         "libs/movies/frontend-feature-movie-search/src/index.ts"
       ],
+      "@acme/movies/ui-movie-card": ["libs/movies/ui-movie-card/src/index.ts"],
+      "@acme/movies/util-movies": ["libs/movies/util-movies/src/index.ts"],
       "@acme/shared/frontend-data-access-apollo": [
         "libs/shared/frontend-data-access-apollo/src/index.ts"
-      ],
-      "@acme/shared/frontend-data-access-movies": [
-        "libs/shared/frontend-data-access-movies/src/index.ts"
       ]
     }
   },

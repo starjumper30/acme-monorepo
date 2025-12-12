@@ -1,4 +1,4 @@
-import { Movie } from '@acme/shared/frontend-data-access-movies';
+import { Movie } from './movies-schema';
 
 export interface EnrichedMovie extends Movie {
   runtime?: string;

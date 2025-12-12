@@ -21,7 +21,7 @@ import { HttpLink } from 'apollo-angular/http';
 import {
   MOVIES_API_URI,
   MOVIES_APOLLO_CACHE,
-} from '@acme/shared/frontend-data-access-movies';
+} from '@acme/movies/frontend-data-access-movies';
 
 import { appRoutes } from './app.routes';
 

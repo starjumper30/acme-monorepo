@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 
-import { EnrichedMovie } from './enriched-movie';
+import { EnrichedMovie } from '@acme/movies/util-movies';
 
 @Component({
   selector: 'acme-movie-card',

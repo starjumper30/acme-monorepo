@@ -1,9 +1,10 @@
 import { gql } from 'apollo-angular';
+
 import {
   GenresQueryResponse,
   MoviesQueryResponse,
   MoviesQueryVariables,
-} from './movies-schema';
+} from '@acme/movies/util-movies';
 
 // TODO figure out how to get the typing to work properly with the gql function
 export const MOVIES_GQL = gql<MoviesQueryResponse, MoviesQueryVariables>`

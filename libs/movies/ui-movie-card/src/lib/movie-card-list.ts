@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { EnrichedMovie } from './enriched-movie';
+import { EnrichedMovie } from '@acme/movies/util-movies';
+
 import { MovieCard } from './movie-card';
 
 @Component({
-  selector: 'acme-movie-search-results-list',
+  selector: 'acme-movie-card-list',
   imports: [MovieCard],
-  templateUrl: './movie-search-results-list.html',
-  styleUrl: './movie-search-results-list.scss',
+  templateUrl: './movie-card-list.html',
+  styleUrl: './movie-card-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MovieSearchResultsList {
+export class MovieCardList {
   selectedGenre = input<string>('');
   movies = input<EnrichedMovie[]>([]);
 }

@@ -24,7 +24,7 @@
   } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} }
 </div>
 
-<acme-movie-search-results-list
+<acme-movie-card-list
   [selectedGenre]="selectedGenre.value ?? ''"
   [movies]="movies()"
-></acme-movie-search-results-list>
+></acme-movie-card-list>

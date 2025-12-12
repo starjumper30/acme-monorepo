@@ -24,15 +24,14 @@ import {
   tap,
 } from 'rxjs';
 
-import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
+import { MoviesApi } from '@acme/movies/frontend-data-access-movies';
+import { MovieCardList } from '@acme/movies/ui-movie-card';
 import {
   GenresQueryResponse,
-  MoviesApi,
   MoviesQueryResponse,
-} from '@acme/shared/frontend-data-access-movies';
-
-import { toEnrichedMovie } from './enriched-movie';
-import { MovieSearchResultsList } from './movie-search-results-list';
+  toEnrichedMovie,
+} from '@acme/movies/util-movies';
+import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
 
 @Component({
   selector: 'acme-movie-search',
@@ -43,7 +42,7 @@ import { MovieSearchResultsList } from './movie-search-results-list';
     MatSelectModule,
     ReactiveFormsModule,
     MatInputModule,
-    MovieSearchResultsList,
+    MovieCardList,
   ],
   templateUrl: './movie-search.html',
   styleUrl: './movie-search.scss',

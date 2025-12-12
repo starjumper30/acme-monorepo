@@ -11,7 +11,6 @@ import { Apollo } from 'apollo-angular';
 import { DocumentNode } from 'graphql/language';
 import { catchError, map, of, shareReplay, switchMap, take, tap } from 'rxjs';
 
-import { MOVIES_API_URI } from './movies-api-injection-tokens';
 import {
   GenresQueryResponse,
   GenresQueryVariables,
@@ -20,7 +19,9 @@ import {
   MoviesApiQueryVariables,
   MoviesQueryResponse,
   MoviesQueryVariables,
-} from './movies-schema';
+} from '@acme/movies/util-movies';
+
+import { MOVIES_API_URI } from './movies-api-injection-tokens';
 import { GENRES_GQL, MOVIES_GQL } from './movies-gql';
 
 @Injectable({

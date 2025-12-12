@@ -1,14 +1,15 @@
-import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { PLATFORM_ID, TransferState } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { Apollo } from 'apollo-angular';
 import { of } from 'rxjs';
+
 import { MoviesApi } from './movies-api';
 import { MOVIES_API_URI } from './movies-api-injection-tokens';
-import { provideHttpClient } from '@angular/common/http';
 
 // TODO expand tests to properly test all server-side and browser-side behavior
 describe('MoviesApi', () => {
