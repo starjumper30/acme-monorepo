@@ -1,0 +1,6 @@
+@for (movie of movies(); track movie.title) {
+<acme-movie-card
+  [movie]="movie"
+  [selectedGenre]="selectedGenre()"
+></acme-movie-card>
+}

@@ -1,37 +1,5 @@
-.movie-card {
-  width: 400px;
-}
-
-.movie-list {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .movie-list-header {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.movie-card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.movie-card-subtitle {
-  span {
-    margin-right: 8px;
-  }
-}
-
-.movie-card-rating {
-  .mat-icon {
-    color: gold;
-  }
-  display: flex;
-  gap: 1px;
-  margin-left: -3px;
 }

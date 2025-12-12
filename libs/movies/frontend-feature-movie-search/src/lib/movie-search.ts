@@ -8,18 +8,7 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatCard,
-  MatCardContent,
-  MatCardHeader,
-  MatCardMdImage,
-  MatCardSubtitle,
-  MatCardTitle,
-  MatCardTitleGroup,
-} from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
@@ -38,37 +27,23 @@ import {
 import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
 import {
   GenresQueryResponse,
-  Movie,
   MoviesApi,
   MoviesQueryResponse,
 } from '@acme/shared/frontend-data-access-movies';
 
-const runtimeRegex = /^PT(?<hours>\d+)H(?<minutes>\d+)M$/;
-function runtime(movie: Movie) {
-  const match = movie.duration?.match(runtimeRegex);
-  return match?.groups?.['hours']
-    ? `${match.groups['hours'] ?? '0'}h ${match.groups['minutes'] ?? '0'}m`
-    : '';
-}
+import { toEnrichedMovie } from './enriched-movie';
+import { MovieSearchResultsList } from './movie-search-results-list';
 
 @Component({
   selector: 'acme-movie-search',
   imports: [
     ReactiveFormsModule,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    MatCardMdImage,
-    MatCardTitleGroup,
-    MatCardSubtitle,
     MatFormFieldModule,
-    MatIconModule,
     MatPaginatorModule,
     MatSelectModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatChipsModule,
+    MovieSearchResultsList,
   ],
   templateUrl: './movie-search.html',
   styleUrl: './movie-search.scss',
@@ -135,11 +110,9 @@ export class MovieSearch {
 
   movies = computed(
     () =>
-      this.movieSignals.data()?.movies?.nodes.map((movie) => ({
-        ...movie,
-        releaseYear: movie.datePublished?.slice(0, 4),
-        runtime: runtime(movie),
-      })) ?? []
+      this.movieSignals
+        .data()
+        ?.movies?.nodes.map((movie) => toEnrichedMovie(movie)) ?? []
   );
 
   isLoadingMovies = this.movieSignals.isLoading;
