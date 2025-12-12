@@ -7,10 +7,9 @@ import {
   PLATFORM_ID,
   TransferState,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import { DocumentNode } from 'graphql/language';
-import { map, of, tap } from 'rxjs';
+import { catchError, map, of, shareReplay, switchMap, take, tap } from 'rxjs';
 
 import { MOVIES_API_URI } from './movies-api-injection-tokens';
 import {
@@ -38,7 +37,20 @@ export class MoviesApi {
     'movies-api-auth-token.state'
   );
 
-  private readonly authToken = toSignal(this.getAuthToken());
+  private readonly context = this.getAuthToken().pipe(
+    shareReplay(1),
+    map((authToken) => ({
+      headers: new HttpHeaders().set('Authorization', `Bearer ${authToken}`),
+    }))
+  );
+
+  constructor() {
+    this.context.pipe(take(1)).subscribe(() => {
+      /* no-op just making sure auth token is requested as soon as the MoviesApi is constructed.
+       * Later subscribers will get the prefetched value because of the shareReplay operator.
+       *  */
+    });
+  }
 
   private getAuthToken() {
     if (isPlatformServer(this.platformId)) {
@@ -54,24 +66,25 @@ export class MoviesApi {
     }
   }
 
-  private context() {
-    return {
-      headers: new HttpHeaders().set(
-        'Authorization',
-        `Bearer ${this.authToken()}`
-      ),
-    };
-  }
-
   customQuery<
     T extends MoviesApiQueryResponse,
     V extends MoviesApiQueryVariables
   >(query: DocumentNode, variables: V) {
-    return this.apollo.watchQuery<T, V>({
-      query,
-      variables,
-      context: this.context(),
-    }).valueChanges;
+    return this.context.pipe(
+      switchMap((context) =>
+        this.apollo
+          .watchQuery<T, V>({
+            query,
+            variables,
+            context,
+          })
+          .valueChanges.pipe(
+            catchError((error) =>
+              of({ error, data: undefined, loading: false })
+            )
+          )
+      )
+    );
   }
 
   genres() {

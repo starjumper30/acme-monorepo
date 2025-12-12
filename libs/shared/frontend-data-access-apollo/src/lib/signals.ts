@@ -14,7 +14,7 @@ export function apolloResultToSignals<T>(
   >
 ) {
   const result = toSignal(valueChanges);
-  const isLoading = computed(() => result()?.loading ?? true);
+  const isLoading = computed(() => result()?.loading ?? false);
   const data = computed(() => result()?.data as T | undefined);
   const error = computed(() => result()?.error);
 

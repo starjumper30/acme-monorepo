@@ -104,6 +104,7 @@ npx nx serve movies-frontend-web
 - run `firebase emulators:start` to serve the app locally
 - The emulator errors out but the app is still being served properly. Have to run `npx kill-port 4200` to shutdown the angular dev server when you are done.
 - If the firebase emulator is not working well enough, you can just set env variables manually and serve the app normally.
+
 ```shell
 export MOVIES_API_URL='https://0kadddxyh3.execute-api.us-east-1.amazonaws.com'
 npx nx serve movies-frontend-web
@@ -133,11 +134,17 @@ duration, rating, etc.
    - flesh out the api service with all the calls needed to implement the MVP
 2. Create a component to display movie search results by genre
 3. Add pagination to the movie search results component
-**4. Finish populating more details on movie cards**
+4. Finish populating more details on movie cards
 
 ## Brainstorm Additional Features
-
+### Tech Debt/Internal Improvements
+- More unit and integration tests
+- lint and test in ci/cd pipeline
+- add an AppShell
 - Test/optimize for mobile
+- Use firebase analytics to track usage
+
+### User-facing Features
 - Switch between tile view and grid view
 - click on movie to open full page route
 - AI integration for movie recommendations
@@ -151,15 +158,10 @@ duration, rating, etc.
 - Have users rate movies, provide reviews
 - List new releases
 - Show ads for popular movies to generate revenue
-- Use firebase analytics to track usage
 
-## MISC TODO
-- figure out server side loading errors
-- tests
-- lint and test in ci/cd pipeline
 
-## AI Prompts
-
+## AI Prompts Used
 - Generate a jest unit test for the Angular 21 component that is open in the editor, using Angular TestBed.
 - Generate a jest unit test for the Angular 21 service that is open in the editor, using Angular TestBed.
 - generate jest unit test for current open file
+- In ChatGPT, Generate a Javascript regular expression that can extract the Hours and Minutes from a string. Here are some example strings: PT1H43M PT2H2M PT2H14M

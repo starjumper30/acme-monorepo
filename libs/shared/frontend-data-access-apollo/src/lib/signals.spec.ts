@@ -63,13 +63,13 @@ describe('apolloResultToSignals', () => {
     });
   });
 
-  it('should default isLoading to true when result is undefined', () => {
+  it('should default isLoading to false when result is undefined', () => {
     TestBed.runInInjectionContext(() => {
       const signals = apolloResultToSignals(EMPTY);
 
       // Before any emission, result is undefined
       expect(signals.result()).toBeUndefined();
-      expect(signals.isLoading()).toBe(true);
+      expect(signals.isLoading()).toBe(false);
     });
   });
 
@@ -83,7 +83,7 @@ describe('apolloResultToSignals', () => {
 
       const signals = apolloResultToSignals(valueChanges);
 
-      expect(signals.isLoading()).toBe(true);
+      expect(signals.isLoading()).toBe(false);
     });
   });
 
@@ -98,7 +98,7 @@ describe('apolloResultToSignals', () => {
       const signals = apolloResultToSignals(subject);
 
       // Initial state
-      expect(signals.isLoading()).toBe(true);
+      expect(signals.isLoading()).toBe(false);
       expect(signals.data()).toBeUndefined();
 
       // First emission

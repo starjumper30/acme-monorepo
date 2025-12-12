@@ -30,7 +30,19 @@
     <mat-card-header>
       <mat-card-title-group>
         <mat-card-title>{{movie.title}}</mat-card-title>
-        <mat-card-subtitle> Subtitle </mat-card-subtitle>
+        <mat-card-subtitle class="movie-card-subtitle"
+          ><span>{{movie.releaseYear}}</span>
+          <span>{{movie.runtime}}</span>
+          <span>{{movie.rating}}</span></mat-card-subtitle
+        >
+        <mat-card-subtitle class="movie-card-rating"
+          ><mat-icon
+            aria-hidden="true"
+            fontIcon="star"
+            class="rating-icon"
+          ></mat-icon>
+          {{movie.ratingValue}}</mat-card-subtitle
+        >
         @if (movie.posterUrl) {
         <img
           mat-card-md-image

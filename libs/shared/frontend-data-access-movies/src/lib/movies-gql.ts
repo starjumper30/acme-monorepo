@@ -10,12 +10,22 @@ export const MOVIES_GQL = gql<MoviesQueryResponse, MoviesQueryVariables>`
   query Movies($where: MovieFilterInput, $pagination: PaginationInput) {
     movies(where: $where, pagination: $pagination) {
       nodes {
+        id
         title
         summary
         posterUrl
         genres {
           title
         }
+        bestRating
+        datePublished
+        directors
+        duration
+        mainActors
+        rating
+        ratingValue
+        worstRating
+        writers
       }
       pagination {
         page
