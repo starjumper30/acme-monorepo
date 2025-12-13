@@ -1,0 +1,18 @@
+.rating-icon-high {
+  color: gold;
+}
+
+.rating-icon-mid {
+  color: silver;
+}
+
+.rating-icon-low {
+  color: sandybrown;
+}
+
+:host {
+  display: flex;
+  gap: 2px;
+  margin-left: -3px;
+  align-items: center;
+}

@@ -1,0 +1,90 @@
+<!-- This component was adapted from an example from the Angular Material website
+https://stackblitz.com/run?file=src%2Fexample%2Ftable-expandable-rows-example.ts&startScript=start
+-->
+
+<table
+  mat-table
+  [dataSource]="dataSource()"
+  multiTemplateDataRows
+  class="mat-elevation-z8"
+>
+  @for (column of columns; track column.field) {
+  <ng-container matColumnDef="{{column.field}}">
+    <th mat-header-cell *matHeaderCellDef>{{column.label}}</th>
+    <td mat-cell *matCellDef="let movie">
+      <div class="movie-cell">
+        @if (column.isArray) { @for (arrayItem of movie[column.field]; track
+        arrayItem) {
+        <span
+          [class.selected]="column.field === 'genres' && arrayItem === selectedGenre()"
+          >{{arrayItem}}{{$last ? '':','}}</span
+        >
+        } } @else if (column.field === 'ratingValue' && typeof movie.ratingValue
+        === 'number') {
+        <acme-rating [rating]="movie.ratingValue" />} @else {
+        {{movie[column.field]}} }
+      </div>
+    </td>
+  </ng-container>
+  }
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let movie">
+      <button
+        matIconButton
+        aria-label="expand row"
+        (click)="toggle(movie); $event.stopPropagation()"
+        [disabled]="!movie.posterUrl && !movie.summary"
+        class="toggle-button"
+        [class.toggle-button-expanded]="isExpanded(movie)"
+      >
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      mat-cell
+      *matCellDef="let movie"
+      [attr.colspan]="columnsToDisplay.length"
+    >
+      <div
+        class="movie-detail-wrapper"
+        [class.movie-detail-wrapper-expanded]="isExpanded(movie)"
+      >
+        <div class="movie-detail">
+          @if (movie.posterUrl) {<img
+            class="movie-poster"
+            [ngSrc]="movie.posterUrl"
+            [width]="100"
+            [height]="150"
+            alt="Poster for {{movie.title}}"
+          />}
+          <div class="movie-description">
+            <p>{{movie.summary}}</p>
+            <p>Published: {{movie.datePublished}}</p>
+            <p>
+              Scores: Min {{movie.worstRating}} Avg {{movie.ratingValue}} Max
+              {{movie.bestRating}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr
+    mat-row
+    *matRowDef="let movie; columns: columnsToDisplay;"
+    class="movie-row"
+    [class.expanded-row]="isExpanded(movie)"
+    (click)="toggle(movie); $event.stopPropagation()"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    class="detail-row"
+  ></tr>
+</table>

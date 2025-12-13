@@ -1,5 +1,8 @@
 <div class="movie-list-header">
-  <mat-form-field>
+  <mat-form-field
+    appearance="outline"
+    class="inline-form-field mat-mdc-paginator"
+  >
     <mat-label>Genre</mat-label>
     <mat-select [formControl]="selectedGenre">
       <mat-option>--</mat-option>
@@ -17,6 +20,22 @@
     aria-label="Select page"
   >
   </mat-paginator>
+  <div>
+    <button
+      matIconButton
+      [disabled]="viewType === 'card'"
+      (click)="viewType = 'card'; $event.stopPropagation()"
+    >
+      <mat-icon>grid_view</mat-icon>
+    </button>
+    <button
+      matIconButton
+      [disabled]="viewType === 'table'"
+      (click)="viewType = 'table'; $event.stopPropagation()"
+    >
+      <mat-icon>table_view</mat-icon>
+    </button>
+  </div>
   @if(genresLoadingError()) {
   <mat-error>{{genresLoadingError()?.message}}</mat-error>
   } @if (isLoadingMovies()) {
@@ -24,7 +43,14 @@
   } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} }
 </div>
 
+@if (viewType === 'card') {
 <acme-movie-card-list
-  [selectedGenre]="selectedGenre.value ?? ''"
   [movies]="movies()"
-></acme-movie-card-list>
+  [selectedGenre]="selectedGenre.value ?? ''"
+/>
+} @else {
+<acme-movie-table
+  [movies]="movies()"
+  [selectedGenre]="selectedGenre.value ?? ''"
+/>
+}

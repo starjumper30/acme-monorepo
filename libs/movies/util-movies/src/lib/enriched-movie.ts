@@ -1,7 +1,7 @@
 import { Movie } from './movies-schema';
 
 export interface EnrichedMovie extends Movie {
-  runtime?: string;
+  runningTime?: string;
   releaseYear?: string;
 }
 
@@ -17,6 +17,6 @@ export function toEnrichedMovie(movie: Movie): EnrichedMovie {
   return {
     ...movie,
     releaseYear: movie.datePublished?.slice(0, 4),
-    runtime: parseRuntime(movie),
+    runningTime: parseRuntime(movie),
   };
 }

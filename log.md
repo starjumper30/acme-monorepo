@@ -137,7 +137,9 @@ duration, rating, etc.
 4. Finish populating more details on movie cards
 
 ## Brainstorm Additional Features
+
 ### Tech Debt/Internal Improvements
+
 - More unit and integration tests
 - lint and test in ci/cd pipeline
 - add an AppShell
@@ -145,7 +147,9 @@ duration, rating, etc.
 - Use firebase analytics to track usage
 
 ### User-facing Features
-- Switch between tile view and grid view
+
+- Switch between card view and grid view
+- Deep linking: put genre selection, view type, per page, and pageIndex into route params to enable linking directly to a particular state
 - click on movie to open full page route
 - AI integration for movie recommendations
 - User profile features
@@ -159,9 +163,11 @@ duration, rating, etc.
 - List new releases
 - Show ads for popular movies to generate revenue
 
-
 ## AI Prompts Used
+
 - Generate a jest unit test for the Angular 21 component that is open in the editor, using Angular TestBed.
 - Generate a jest unit test for the Angular 21 service that is open in the editor, using Angular TestBed.
 - generate jest unit test for current open file
+- add additional test cases to the currently open file
+- generate jest unit test for current open file using Angular 21 testing frameworks
 - In ChatGPT, Generate a Javascript regular expression that can extract the Hours and Minutes from a string. Here are some example strings: PT1H43M PT2H2M PT2H14M

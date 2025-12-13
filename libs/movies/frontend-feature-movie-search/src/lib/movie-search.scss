@@ -1,5 +1,12 @@
 .movie-list-header {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
+  margin-bottom: 16px;
+}
+
+:host {
+  margin: 16px;
+  display: block;
 }

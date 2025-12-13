@@ -22,10 +22,14 @@
         "libs/movies/frontend-feature-movie-search/src/index.ts"
       ],
       "@acme/movies/ui-movie-card": ["libs/movies/ui-movie-card/src/index.ts"],
+      "@acme/movies/ui-movie-table": [
+        "libs/movies/ui-movie-table/src/index.ts"
+      ],
       "@acme/movies/util-movies": ["libs/movies/util-movies/src/index.ts"],
       "@acme/shared/frontend-data-access-apollo": [
         "libs/shared/frontend-data-access-apollo/src/index.ts"
-      ]
+      ],
+      "@acme/shared/ui-rating": ["libs/shared/ui-rating/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

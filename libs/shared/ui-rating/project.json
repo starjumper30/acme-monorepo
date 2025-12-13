@@ -1,0 +1,21 @@
+{
+  "name": "shared-ui-rating",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui-rating/src",
+  "prefix": "acme",
+  "projectType": "library",
+  "tags": ["type:ui", "scope:movies"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/shared/ui-rating/jest.config.ts",
+        "tsConfig": "libs/shared/ui-rating/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

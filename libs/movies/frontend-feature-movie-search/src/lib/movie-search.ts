@@ -8,7 +8,9 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,6 +28,7 @@ import {
 
 import { MoviesApi } from '@acme/movies/frontend-data-access-movies';
 import { MovieCardList } from '@acme/movies/ui-movie-card';
+import { MovieTable } from '@acme/movies/ui-movie-table';
 import {
   GenresQueryResponse,
   MoviesQueryResponse,
@@ -37,37 +40,45 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
   selector: 'acme-movie-search',
   imports: [
     ReactiveFormsModule,
+    MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatPaginatorModule,
     MatSelectModule,
     ReactiveFormsModule,
     MatInputModule,
     MovieCardList,
+    MovieTable,
   ],
   templateUrl: './movie-search.html',
   styleUrl: './movie-search.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieSearch {
-  moviesAPI = inject(MoviesApi);
+  private readonly moviesAPI = inject(MoviesApi);
 
   private readonly genreSignals = apolloResultToSignals<GenresQueryResponse>(
     this.moviesAPI.genres()
   );
 
-  genres = computed(() => this.genreSignals.data()?.genres.nodes ?? []);
-  isLoadingGenres = this.genreSignals.isLoading;
-  genresLoadingError = this.genreSignals.error;
+  protected readonly genres = computed(
+    () => this.genreSignals.data()?.genres.nodes ?? []
+  );
+  protected readonly isLoadingGenres = this.genreSignals.isLoading;
+  protected readonly genresLoadingError = this.genreSignals.error;
 
-  selectedGenre = new FormControl({ value: '', disabled: true });
-  pageSettings = signal({ page: 1, perPage: 9 });
+  protected readonly selectedGenre = new FormControl({
+    value: '',
+    disabled: true,
+  });
+  protected readonly pageSettings = signal({ page: 1, perPage: 9 });
 
   private readonly genreObservable = this.selectedGenre.valueChanges.pipe(
     startWith(''),
     distinctUntilChanged()
   );
 
-  totalMovies = toSignal(
+  protected readonly totalMovies = toSignal(
     this.genreObservable.pipe(
       // reset to first page when genre changes
       tap(() =>
@@ -107,15 +118,17 @@ export class MovieSearch {
     )
   );
 
-  movies = computed(
+  protected readonly movies = computed(
     () =>
       this.movieSignals
         .data()
-        ?.movies?.nodes.map((movie) => toEnrichedMovie(movie)) ?? []
+        ?.movies?.nodes?.map((movie) => toEnrichedMovie(movie)) ?? []
   );
 
-  isLoadingMovies = this.movieSignals.isLoading;
-  moviesLoadingError = this.movieSignals.error;
+  protected readonly isLoadingMovies = this.movieSignals.isLoading;
+  protected readonly moviesLoadingError = this.movieSignals.error;
+
+  protected viewType: 'card' | 'table' = 'card';
 
   constructor() {
     effect(() => {

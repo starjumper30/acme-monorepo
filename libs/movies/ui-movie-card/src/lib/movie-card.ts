@@ -4,10 +4,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 
 import { EnrichedMovie } from '@acme/movies/util-movies';
+import { Rating } from '@acme/shared/ui-rating';
 
 @Component({
   selector: 'acme-movie-card',
-  imports: [MatCardModule, MatIconModule, MatChipsModule],
+  imports: [MatCardModule, MatIconModule, MatChipsModule, Rating],
   templateUrl: './movie-card.html',
   styleUrl: './movie-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
