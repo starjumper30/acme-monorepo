@@ -1,102 +1,200 @@
-# Acme
+# Answers to Interview Questions
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+I have included more detail about my thought processes and choices in the project log below. Here are the short answers to the required questions.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+### Highlight something in your project that you thought was especially interesting or significant to your overall implementation.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+The most interesting part of this project was the AI integration, simply because that is new technology, whereas the other features are
+very typical of apps that I have developed in the past.
 
-## Run tasks
+The piece most significant to the implementation was the incorporation of the appolo-angular client library.
+This made the graphql implementation very smooth and robust, including a caching layer with minimal effort.
 
-To run the dev server for your app, use:
+### Tell us what you are most pleased or proud of with your implementation.
 
-```sh
+I haven't written Angular code in 4 years, so I'm proud of how I was able to incorporate all the new best practices and features like signals.
+
+### Given more time, what next feature or improvement would you like to add to your project?
+
+Adding a title search input is an obvious next step.
+After that, I think it would be good to add an optional user sign-in and a persistence layer so that we can begin
+storing user preferences and favorites to customize the app for the user. Additionally, the AI usage should be
+restricted with a per-user quota so that an individual user doesn't consume too many credits.
+
+# Project Log
+
+## Evaluate requirements and choose a tech stack
+
+### Tools I'm most familiar with for building this type of app
+
+- Angular for frontend.
+- Nx for monorepo management.
+
+### MVP needs
+
+- Doesn't require any persistence layer because data is being pulled from a third party API.
+- Doesn't require user authentication because it is stateless and calling an API with a server API token that can be retrieved without any credentials.
+- No security + no persistence **means no need for a backend**
+- **Could deploy the MVP as a single Angular app to any static hosting provider.**
+
+### What I might need for future features
+
+- User authentication and a persistence layer to store list of favorite movies.
+- Improved handling of auth tokens if we switch to a more secure movie API.
+- Server-side rendering for SEO and performance optimizations.
+- load-balancing
+- secret management
+- artifact management for rollback and repeatable deployments
+
+### How do I satisfy the MVP requirements quickly and simply while also positioning the project for future requirements?
+
+- Use Nx to create a monorepo structure for our organization (acme).
+  This sets us up for future growth, code reuse across projects, and good organization as this project grows.
+  A nx workspace also supports a wide range of tools and frameworks that we might need to add in the future.
+- Use Nx to generate a new angular app with ssr enabled, even if we don't plan to fully take advantage of it yet. The tradeoff in complexity is small.
+- Deploy the angular app to Firebase hosting.
+  - Pros
+    - Easy and inexpensive way to get a working MVP up and running quickly.
+    - Will be easy to integrate with other Firebase features later if we need to add user authentication or persistence.
+    - Provides other enterprise grade features like load-balancing, secret management, artifact storage, automated builds, SSL, etc.
+    - Tailored for mobile and web apps, but can easily integrate with other Google cloud products if this app becomes part of a large ecosystem of enterprise services.
+  - Cons
+    - None for hosting the MVP, but once we start adding features that use Firebase services like Firestore or authentication, we will be tied to a specific cloud provider.
+  - **Tradeoff summary: Cheap, easy, low maintenance way to add features using cloud-native services at the expense of vendor lock-in.**
+
+## Get a workspace going
+
+### Create an nx workspace with an angular app. See shell output below for choices made.
+
+Create the frontend-web app in a "movies" domain folder.
+This sets us up for a mono-repo structure that can hold future projects for ACME corp as well as additional apps within the "movies" domain.
+
+```shell
+chris.hardin@VAL-US-100 starjumper30 % nvm use 24 # use latest LTS version of node
+Now using node v24.11.0 (npm v11.6.1)
+chris.hardin@VAL-US-100 starjumper30 % npx create-nx-workspace@latest
+
+ NX   Let's create a new workspace [https://nx.dev/getting-started/intro]
+
+✔ Where would you like to create your workspace? · acme
+✔ Which starter do you want to use? · custom
+✔ Which stack do you want to use? · angular
+✔ Integrated monorepo, or standalone project? · integrated
+✔ Application name · movies/frontend-web
+✔ Which bundler would you like to use? · esbuild
+✔ Default stylesheet format · scss
+✔ Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? · Yes
+✔ Which unit test runner would you like to use? · jest
+✔ Test runner to use for end to end (E2E) tests · cypress
+✔ Which CI provider would you like to use? · skip
+✔ Would you like remote caching to make your build faster? · skip
+
+ NX   Creating your v22.2.0 workspace.
+```
+
+### Verify project settings in Webstorm IDE
+
+- verified IDE code quality settings
+  - SonarCube
+  - Prettier on save
+  - eslint fix on save
+- verified AI assistance settings
+  - Jetbrains AI Assistant
+  - Nx AI agents and MCP
+- updated schematics in nx.json to use acme prefix and scss.
+- switched to zoneless angular bootstrap
+- tested serve on frontend-web app
+
+```shell
 npx nx serve movies-frontend-web
 ```
 
-To create a production bundle:
+- commit apps as a starting point
 
-```sh
-npx nx build movies-frontend-web
+### Set up CI/CD with Firebase hosting
+
+- Create Firebase project in Firebase console (acme-movies-fb)
+- Upgrade project to Blaze plan
+- Set up App Hosting for the project
+  - link to the Github repo
+  - set app root to /apps/movies/frontend-web
+  - have it deploy automatically from main branch
+- Verify initial deployment at https://movies-web--acme-movies-fb.us-central1.hosted.app/
+
+### Setup Local Development
+
+- install and configure firebase cli (https://firebase.google.com/docs/app-hosting/emulate)
+- run `firebase emulators:start` to serve the app locally
+- The emulator errors out but the app is still being served properly. Have to run `npx kill-port 4200` to shutdown the angular dev server when you are done.
+- If the firebase emulator is not working well enough, you can just set env variables manually and serve the app normally.
+
+```shell
+export MOVIES_API_URL='https://0kadddxyh3.execute-api.us-east-1.amazonaws.com'
+npx nx serve movies-frontend-web
 ```
 
-To see all available targets to run for a project, run:
+## Implement MVP
 
-```sh
-npx nx show project movies-frontend-web
+MVP requirements:
+
+```
+As a user,
+● I can search for movies and see a paginated list of results
+● I can filter search results by genre
+● I can navigate through the next and previous pages of the paginated results
+● I see the total count of search results
+● I see notable information for each search result, such as the summary, poster,
+duration, rating, etc.
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### High-level tasks in order
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+1. ✅ Implement and test angular service for movie search
+   - get auth token
+   - make a graphql call using apollo-angular client
+     https://the-guild.dev/graphql/apollo-angular/docs/performance/server-side-rendering#server-side-rendering
+     https://github.com/kamilkisiela/apollo-angular-ssr/tree/master
+   - flesh out the api service with all the calls needed to implement the MVP
+2. ✅ Create a component to display movie search results by genre
+3. ✅ Add pagination to the movie search results component
+4. ✅ Finish populating more details on movie cards
 
-## Add new projects
+## Brainstorm Additional Features
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+### Tech Debt/Internal Improvements
 
-Use the plugin's generator to create new projects.
+- More unit and integration tests
+- lint and test in ci/cd pipeline
+- add an AppShell
+- Test/optimize for mobile
+- Use firebase analytics to track usage
 
-To generate a new application, use:
+### User-facing Features
 
-```sh
-npx nx g @nx/angular:app demo
-```
+- ✅ Switch between card view and grid view
+- ✅ AI integration for movie recommendations https://firebase.google.com/docs/ai-logic/get-started?api=dev#prereqs
+  TODO
+  - ✅ movie selection
+  - ✅ put firebase init in a better place? (a firebase service)
+  - ✅ Refactor the mess of code in movie-search, maybe move some logic into a recommendations component
+- Deep linking: put genre selection, view type, per page, and pageIndex into route params to enable linking directly to a particular state
+- click on movie to open full page route
+- User profile features
+  - Favorites list
+  - List to track movies they've seen
+  - store movie preferences (feeds into AI recommendations)
+- View movie trailers in an embedded player (youtube?)
+- Additional filters
+- kid profile
+- Have users rate movies, provide reviews
+- List new releases
+- Show ads for popular movies to generate revenue
 
-To generate a new library, use:
+## AI Prompts Used
 
-```sh
-npx nx g @nx/angular:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Generate a jest unit test for the Angular 21 component that is open in the editor, using Angular TestBed.
+- Generate a jest unit test for the Angular 21 service that is open in the editor, using Angular TestBed.
+- generate jest unit test for current open file
+- add additional test cases to the currently open file
+- generate jest unit test for current open file using Angular 21 testing frameworks
+- In ChatGPT, Generate a Javascript regular expression that can extract the Hours and Minutes from a string. Here are some example strings: PT1H43M PT2H2M PT2H14M
