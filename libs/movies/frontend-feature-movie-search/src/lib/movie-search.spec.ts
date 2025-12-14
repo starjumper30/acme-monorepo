@@ -13,6 +13,7 @@ import { MovieCardList } from '@acme/movies/ui-movie-card';
 import { MovieTable } from '@acme/movies/ui-movie-table';
 
 import { MovieSearch } from './movie-search';
+import { EnrichedMovie } from '@acme/movies/util-movies';
 
 describe('MovieSearch', () => {
   let component: MovieSearch;
@@ -290,8 +291,8 @@ describe('MovieSearch', () => {
   });
 
   describe('View Type', () => {
-    it('should default to table view', () => {
-      expect(component['viewType']).toBe('table');
+    it('should default to card view', () => {
+      expect(component['viewType']).toBe('card');
     });
 
     it('should allow switching view type', () => {
@@ -300,6 +301,44 @@ describe('MovieSearch', () => {
 
       component['viewType'] = 'table';
       expect(component['viewType']).toBe('table');
+    });
+
+    it('should switch to recommendations view when conditions are met', () => {
+      fixture.detectChanges();
+
+      component['selectedGenre'].setValue('Action');
+      component['selectedMovie'] = {
+        id: 'm1',
+        title: 'Test Movie',
+      } as EnrichedMovie;
+
+      component['getRecommendations']();
+
+      expect(component['viewType']).toBe('recommendations');
+    });
+
+    it('should not switch to recommendations view without genre', () => {
+      fixture.detectChanges();
+
+      component['selectedMovie'] = {
+        id: 'm1',
+        title: 'Test Movie',
+      } as EnrichedMovie;
+
+      component['getRecommendations']();
+
+      expect(component['viewType']).toBe('card');
+    });
+
+    it('should not switch to recommendations view without selected movie title', () => {
+      fixture.detectChanges();
+
+      component['selectedGenre'].setValue('Action');
+      component['selectedMovie'] = { id: 'm1' } as EnrichedMovie;
+
+      component['getRecommendations']();
+
+      expect(component['viewType']).toBe('card');
     });
   });
 

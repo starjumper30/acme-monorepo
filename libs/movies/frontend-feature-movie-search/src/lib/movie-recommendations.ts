@@ -98,7 +98,14 @@ export class MovieRecommendations {
         recommendationData.titles.length
           ? this.moviesAPI.moviesByTitlesSearch(recommendationData.titles).pipe(
               map((response) => {
-                if (!response.loading) {
+                if (response.error) {
+                  console.error(response.error);
+                  return {
+                    ...recommendationData,
+                    message: 'Failed to load recommendations from movies API.',
+                    loading: false,
+                  };
+                } else if (!response.loading) {
                   const finalData = {
                     ...recommendationData,
                     results:
@@ -110,13 +117,6 @@ export class MovieRecommendations {
                   };
                   this.lastRecommendationData = finalData;
                   return finalData;
-                } else if (response.error) {
-                  console.error(response.error);
-                  return {
-                    ...recommendationData,
-                    message: 'Failed to load recommendations from movies API.',
-                    loading: false,
-                  };
                 }
                 return recommendationData;
               }),
