@@ -1,8 +1,6 @@
 import { Component, inject, input } from '@angular/core';
-import { EnrichedMovie, toEnrichedMovie } from '@acme/movies/util-movies';
-import { MoviesAiRecommendations } from '@acme/movies/frontend-data-access-firebase';
-import { MovieCardList } from '@acme/movies/ui-movie-card';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   catchError,
   combineLatest,
@@ -15,7 +13,10 @@ import {
   switchMap,
 } from 'rxjs';
 
+import { MoviesAiRecommendations } from '@acme/movies/frontend-data-access-firebase';
 import { MoviesApi } from '@acme/movies/frontend-data-access-movies';
+import { MovieCardList } from '@acme/movies/ui-movie-card';
+import { EnrichedMovie, toEnrichedMovie } from '@acme/movies/util-movies';
 
 interface RecommendationData {
   title: string;
@@ -23,11 +24,12 @@ interface RecommendationData {
   message: string;
   results: EnrichedMovie[];
   titles: string[];
+  loading: boolean;
 }
 
 @Component({
   selector: 'acme-movie-recommendations',
-  imports: [MovieCardList],
+  imports: [MovieCardList, MatProgressSpinnerModule],
   templateUrl: './movie-recommendations.html',
   styleUrl: './movie-recommendations.scss',
 })
@@ -67,9 +69,10 @@ export class MovieRecommendations {
           ({
             title,
             genre,
-            message: `Loading recommendations for genre ${genre} that are similar to "${title}"...`,
+            message: `Loading recommendations for genre "${genre}" that are similar to "${title}"...`,
             results: [],
             titles: [],
+            loading: true,
           } as RecommendationData)
       ),
       switchMap((recommendationData) =>
@@ -86,6 +89,7 @@ export class MovieRecommendations {
             return of({
               ...recommendationData,
               message: 'Failed to get recommendations from AI',
+              loading: false,
             });
           })
         )
@@ -101,10 +105,18 @@ export class MovieRecommendations {
                       response.data?.movies?.nodes?.map((movie) =>
                         toEnrichedMovie(movie)
                       ) ?? [],
-                    message: `Recommendations for genre ${this.selectedGenre()} that are similar to "${this.selectedMovie()}"`,
+                    message: `Recommendations for genre "${this.selectedGenre()}" that are similar to "${this.selectedMovie()}"`,
+                    loading: false,
                   };
                   this.lastRecommendationData = finalData;
                   return finalData;
+                } else if (response.error) {
+                  console.error(response.error);
+                  return {
+                    ...recommendationData,
+                    message: 'Failed to load recommendations from movies API.',
+                    loading: false,
+                  };
                 }
                 return recommendationData;
               }),
@@ -113,6 +125,7 @@ export class MovieRecommendations {
                 return of({
                   ...recommendationData,
                   message: 'Failed to load recommendations from movies API.',
+                  loading: false,
                 });
               })
             )

@@ -1,6 +1,11 @@
-{{recommendations()?.message}}
-<acme-movie-card-list
-  [movies]="recommendations()?.results ?? []"
-  [selectedGenre]="selectedGenre()"
-  [highlightSelected]="false"
-/>
+@if (recommendations()) {
+  <h4>{{recommendations()?.message}}</h4>
+  @if (recommendations()?.loading) { <div class="center-contents"><mat-progress-spinner mode="indeterminate" /></div> }
+  @else {
+    <acme-movie-card-list
+      [movies]="recommendations()?.results ?? []"
+      [selectedGenre]="selectedGenre()"
+      [highlightSelected]="false"
+  />
+  }
+}
