@@ -56,15 +56,18 @@
 <acme-movie-card-list
   [movies]="movies()"
   [selectedGenre]="selectedGenre.value ?? ''"
+  [(selectedMovie)]="selectedMovie"
 />
 } @else if (viewType === 'table') {
 <acme-movie-table
   [movies]="movies()"
   [selectedGenre]="selectedGenre.value ?? ''"
+  [(selectedMovie)]="selectedMovie"
 />
 } @else if (viewType === 'recommendations') { {{recommendationsMessage()}}
 <acme-movie-card-list
   [movies]="recommendations() ?? []"
   [selectedGenre]="selectedGenre.value ?? ''"
+  [highlightSelected]="false"
 />
 }

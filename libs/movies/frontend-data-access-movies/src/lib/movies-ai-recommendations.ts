@@ -38,7 +38,7 @@ export class MoviesAiRecommendations {
 
   async getRecommendations(genre: string, selectedMovie: string) {
     const prompt = `Recommend the top 100 movies for ${genre} genre that are similar to ${selectedMovie}.
-    Please format the output as a pipe-delimited list of titles.`;
+    Format the output as a pipe-delimited list of titles. Do not include any extra information with the title, just the official title.`;
 
     const result = await this.model.generateContent(prompt);
     return (

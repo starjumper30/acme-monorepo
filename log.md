@@ -150,6 +150,12 @@ duration, rating, etc.
 
 - ✅ Switch between card view and grid view
 - AI integration for movie recommendations https://firebase.google.com/docs/ai-logic/get-started?api=dev#prereqs
+    TODO 
+    - ✅ movie selection
+    - put firebase init in a better place? (a firebase service or a provider function and injection token)
+    - better loading indicator while recommendations are loading
+    - Improve recommendation header text (highlight genre and title)
+    - Refactor the mess of code in movie-search, maybe move some logic into a recommendations component?
 - Deep linking: put genre selection, view type, per page, and pageIndex into route params to enable linking directly to a particular state
 - click on movie to open full page route
 - User profile features

@@ -10,12 +10,15 @@ tr.movie-row {
   cursor: pointer;
 }
 
-tr.movie-row:not(.expanded-row):hover {
+tr.movie-row:not(.expanded-row):not(.selected-movie):hover {
   background: whitesmoke;
 }
 
-tr.movie-row:not(.expanded-row):active {
-  background: #efefef;
+tr.selected-movie {
+  background-color: var(--mat-sys-primary-fixed);
+  &:hover {
+    background-color: var(--mat-sys-primary-fixed);
+  }
 }
 
 .movie-row td {
@@ -25,13 +28,6 @@ tr.movie-row:not(.expanded-row):active {
     flex-wrap: wrap;
     align-items: center;
     column-gap: 4px;
-
-    .selected {
-      color: var(
-        --mat-form-field-outlined-focus-outline-color,
-        var(--mat-sys-primary)
-      );
-    }
   }
 }
 

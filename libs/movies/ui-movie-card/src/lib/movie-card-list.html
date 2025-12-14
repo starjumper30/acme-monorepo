@@ -1,6 +1,9 @@
 @for (movie of movies(); track movie.title) {
 <acme-movie-card
+  [class.selected-movie]="highlightSelected() && movie === selectedMovie()"
+  (click)="selectMovie(movie)"
+  (keydown.enter)="selectMovie(movie)"
   [movie]="movie"
   [selectedGenre]="selectedGenre()"
-></acme-movie-card>
+/>
 }

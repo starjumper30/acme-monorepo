@@ -9,6 +9,7 @@ import {
   Component,
   computed,
   input,
+  model,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,13 +32,14 @@ import { Rating } from '@acme/shared/ui-rating';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieTable {
+  readonly selectedMovie = model<EnrichedMovie | undefined>(); // Two-way binding
   readonly movies = input.required<EnrichedMovie[]>();
   readonly selectedGenre = input<string>('');
 
   protected readonly dataSource = computed(() =>
     this.movies().map((movie) => ({
       ...movie,
-      genres: movie.genres?.map((genre) => genre.title),
+      genreTitles: movie.genres?.map((genre) => genre.title),
     }))
   );
 
@@ -47,7 +49,7 @@ export class MovieTable {
     { label: 'Year', field: 'releaseYear', isArray: false },
     { label: 'Rating', field: 'rating', isArray: false },
     { label: 'Duration', field: 'runningTime', isArray: false },
-    { label: 'Genres', field: 'genres', isArray: true },
+    { label: 'Genres', field: 'genreTitles', isArray: true },
     { label: 'Cast', field: 'mainActors', isArray: true },
     { label: 'Directors', field: 'directors', isArray: true },
     { label: 'Writers', field: 'writers', isArray: true },
@@ -59,13 +61,16 @@ export class MovieTable {
 
   private expandedMovie: string | undefined;
 
-  protected isExpanded({ id }: Pick<EnrichedMovie, 'id'>) {
+  protected isExpanded({ id }: EnrichedMovie) {
     return this.expandedMovie === id;
   }
 
-  protected toggle(movie: Pick<EnrichedMovie, 'id' | 'posterUrl' | 'summary'>) {
+  protected toggle(movie: EnrichedMovie) {
+    this.selectedMovie.update(() => movie);
     if (movie.posterUrl || movie.summary) {
       this.expandedMovie = this.isExpanded(movie) ? undefined : movie.id;
+    } else {
+      this.expandedMovie = undefined;
     }
   }
 }

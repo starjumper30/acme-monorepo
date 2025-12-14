@@ -44,3 +44,7 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
+
+.selected-movie {
+    background-color: var(--mat-sys-primary);
+}

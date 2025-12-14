@@ -38,7 +38,6 @@ import { MovieTable } from '@acme/movies/ui-movie-table';
 import {
   EnrichedMovie,
   GenresQueryResponse,
-  Movie,
   MoviesQueryResponse,
   toEnrichedMovie,
 } from '@acme/movies/util-movies';
@@ -153,10 +152,13 @@ export class MovieSearch {
     this.pageSettings.set({ page: pageIndex + 1, perPage: pageSize });
   }
 
-  selectedMovie = 'Harry Potter'; // TODO movie selection from user
-  private currentRecommendationInputs = {
+  protected selectedMovie: EnrichedMovie | undefined;
+  private currentRecommendationInputs: {
+    genre: string;
+    movie: EnrichedMovie | undefined;
+  } = {
     genre: '',
-    movie: '',
+    movie: undefined,
   };
 
   protected readonly recommendationsMessage = signal('');
@@ -166,11 +168,13 @@ export class MovieSearch {
       filter((titles) => titles.length > 0),
       switchMap((titles) =>
         this.moviesAPI.moviesByTitlesSearch(titles).pipe(
-          tap(() =>
-            this.recommendationsMessage.set(
-              `Recommendations for genre ${this.currentRecommendationInputs.genre} that are similar to "${this.currentRecommendationInputs.movie}"`
-            )
-          ),
+          tap((result) => {
+            if (!result.loading) {
+              this.recommendationsMessage.set(
+                `Recommendations for genre ${this.currentRecommendationInputs.genre} that are similar to "${this.currentRecommendationInputs.movie?.title}"`
+              );
+            }
+          }),
           map((response) =>
             response.data?.movies?.nodes?.map((movie) => toEnrichedMovie(movie))
           ),
@@ -184,7 +188,9 @@ export class MovieSearch {
   );
 
   protected getRecommendations() {
-    if (this.selectedGenre.value && this.selectedMovie) {
+    // TODO it might be cleaner to push this into an observable instead of having all this logic
+    // to prevent race conditions with promises
+    if (this.selectedGenre.value && this.selectedMovie?.title) {
       this.viewType = 'recommendations';
       const selections = {
         genre: this.selectedGenre.value,
@@ -200,18 +206,18 @@ export class MovieSearch {
       }
       this.currentRecommendationInputs = { ...selections };
       this.recommendationsMessage.set(
-        `Loading recommendations for genre ${selections.genre} that are similar to "${selections.movie}"...`
+        `Loading recommendations for genre ${selections.genre} that are similar to "${selections.movie.title}"...`
       );
       this.recommendedTitles.set([]);
       this.aiService
-        .getRecommendations(this.selectedGenre.value, this.selectedMovie)
+        // title is checked in the above if statement
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .getRecommendations(selections.genre, selections.movie.title!)
         .then((titles) => {
-          console.log('AI recommendations', titles);
           if (
             this.currentRecommendationInputs.genre === selections.genre &&
             this.currentRecommendationInputs.movie === selections.movie
           ) {
-            console.log('Updating recommendations');
             this.recommendedTitles.set(titles);
           }
         });

@@ -16,7 +16,7 @@ https://stackblitz.com/run?file=src%2Fexample%2Ftable-expandable-rows-example.ts
         @if (column.isArray) { @for (arrayItem of movie[column.field]; track
         arrayItem) {
         <span
-          [class.selected]="column.field === 'genres' && arrayItem === selectedGenre()"
+          [class.selected]="column.field === 'genreTitles' && arrayItem === selectedGenre()"
           >{{arrayItem}}{{$last ? '':','}}</span
         >
         } } @else if (column.field === 'ratingValue' && typeof movie.ratingValue
@@ -79,12 +79,14 @@ https://stackblitz.com/run?file=src%2Fexample%2Ftable-expandable-rows-example.ts
     mat-row
     *matRowDef="let movie; columns: columnsToDisplay;"
     class="movie-row"
+    [class.selected-movie]="movie === selectedMovie()"
     [class.expanded-row]="isExpanded(movie)"
     (click)="toggle(movie); $event.stopPropagation()"
   ></tr>
   <tr
     mat-row
-    *matRowDef="let row; columns: ['expandedDetail']"
+    *matRowDef="let movie; columns: ['expandedDetail']"
     class="detail-row"
+    [class.selected-movie]="movie === selectedMovie()"
   ></tr>
 </table>

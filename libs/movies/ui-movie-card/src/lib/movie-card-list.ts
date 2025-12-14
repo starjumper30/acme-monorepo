@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  model,
+} from '@angular/core';
 
 import { EnrichedMovie } from '@acme/movies/util-movies';
 
@@ -12,6 +17,12 @@ import { MovieCard } from './movie-card';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieCardList {
-  selectedGenre = input<string>('');
-  movies = input<EnrichedMovie[]>([]);
+  readonly selectedMovie = model<EnrichedMovie | undefined>(); // Two-way binding
+  readonly selectedGenre = input<string>('');
+  readonly movies = input<EnrichedMovie[]>([]);
+  readonly highlightSelected = input<boolean>(true);
+
+  protected selectMovie(movie: EnrichedMovie) {
+    this.selectedMovie.update(() => movie);
+  }
 }
