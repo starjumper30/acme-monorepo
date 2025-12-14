@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@acme/movies/frontend-data-access-firebase": [
+        "libs/movies/frontend-data-access-firebase/src/index.ts"
+      ],
       "@acme/movies/frontend-data-access-movies": [
         "libs/movies/frontend-data-access-movies/src/index.ts"
       ],

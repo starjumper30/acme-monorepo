@@ -20,8 +20,6 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
-  EMPTY,
-  filter,
   map,
   of,
   startWith,
@@ -29,10 +27,7 @@ import {
   tap,
 } from 'rxjs';
 
-import {
-  MoviesAiRecommendations,
-  MoviesApi,
-} from '@acme/movies/frontend-data-access-movies';
+import { MoviesApi } from '@acme/movies/frontend-data-access-movies';
 import { MovieCardList } from '@acme/movies/ui-movie-card';
 import { MovieTable } from '@acme/movies/ui-movie-table';
 import {
@@ -42,6 +37,8 @@ import {
   toEnrichedMovie,
 } from '@acme/movies/util-movies';
 import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo';
+
+import { MovieRecommendations } from './movie-recommendations';
 
 @Component({
   selector: 'acme-movie-search',
@@ -56,6 +53,7 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
     MatInputModule,
     MatTooltipModule,
     MovieCardList,
+    MovieRecommendations,
     MovieTable,
   ],
   templateUrl: './movie-search.html',
@@ -63,8 +61,6 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieSearch {
-  private readonly aiService = inject(MoviesAiRecommendations);
-
   private readonly moviesAPI = inject(MoviesApi);
 
   private readonly genreSignals = apolloResultToSignals<GenresQueryResponse>(
@@ -139,6 +135,7 @@ export class MovieSearch {
   protected readonly moviesLoadingError = this.movieSignals.error;
 
   protected viewType: 'card' | 'table' | 'recommendations' = 'card';
+  protected selectedMovie: EnrichedMovie | undefined;
 
   constructor() {
     effect(() => {
@@ -152,75 +149,9 @@ export class MovieSearch {
     this.pageSettings.set({ page: pageIndex + 1, perPage: pageSize });
   }
 
-  protected selectedMovie: EnrichedMovie | undefined;
-  private currentRecommendationInputs: {
-    genre: string;
-    movie: EnrichedMovie | undefined;
-  } = {
-    genre: '',
-    movie: undefined,
-  };
-
-  protected readonly recommendationsMessage = signal('');
-  protected readonly recommendedTitles = signal<string[]>([]);
-  protected readonly recommendations = toSignal(
-    toObservable(this.recommendedTitles).pipe(
-      filter((titles) => titles.length > 0),
-      switchMap((titles) =>
-        this.moviesAPI.moviesByTitlesSearch(titles).pipe(
-          tap((result) => {
-            if (!result.loading) {
-              this.recommendationsMessage.set(
-                `Recommendations for genre ${this.currentRecommendationInputs.genre} that are similar to "${this.currentRecommendationInputs.movie?.title}"`
-              );
-            }
-          }),
-          map((response) =>
-            response.data?.movies?.nodes?.map((movie) => toEnrichedMovie(movie))
-          ),
-          catchError((e) => {
-            console.log('Failed to load recommendations', e);
-            return EMPTY;
-          })
-        )
-      )
-    )
-  );
-
   protected getRecommendations() {
-    // TODO it might be cleaner to push this into an observable instead of having all this logic
-    // to prevent race conditions with promises
     if (this.selectedGenre.value && this.selectedMovie?.title) {
       this.viewType = 'recommendations';
-      const selections = {
-        genre: this.selectedGenre.value,
-        movie: this.selectedMovie,
-      };
-      if (
-        this.currentRecommendationInputs.genre === selections.genre &&
-        this.currentRecommendationInputs.movie === selections.movie &&
-        this.recommendedTitles().length
-      ) {
-        // don't call AI with same inputs as last time
-        return;
-      }
-      this.currentRecommendationInputs = { ...selections };
-      this.recommendationsMessage.set(
-        `Loading recommendations for genre ${selections.genre} that are similar to "${selections.movie.title}"...`
-      );
-      this.recommendedTitles.set([]);
-      this.aiService
-        // title is checked in the above if statement
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .getRecommendations(selections.genre, selections.movie.title!)
-        .then((titles) => {
-          if (
-            this.currentRecommendationInputs.genre === selections.genre &&
-            this.currentRecommendationInputs.movie === selections.movie
-          ) {
-            this.recommendedTitles.set(titles);
-          }
-        });
     }
   }
 }

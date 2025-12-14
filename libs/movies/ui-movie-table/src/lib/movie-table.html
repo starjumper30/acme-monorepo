@@ -79,7 +79,7 @@ https://stackblitz.com/run?file=src%2Fexample%2Ftable-expandable-rows-example.ts
     mat-row
     *matRowDef="let movie; columns: columnsToDisplay;"
     class="movie-row"
-    [class.selected-movie]="movie === selectedMovie()"
+    [class.selected-movie]="movie.id === selectedMovie()?.id"
     [class.expanded-row]="isExpanded(movie)"
     (click)="toggle(movie); $event.stopPropagation()"
   ></tr>
@@ -87,6 +87,6 @@ https://stackblitz.com/run?file=src%2Fexample%2Ftable-expandable-rows-example.ts
     mat-row
     *matRowDef="let movie; columns: ['expandedDetail']"
     class="detail-row"
-    [class.selected-movie]="movie === selectedMovie()"
+    [class.selected-movie]="movie.id === selectedMovie()?.id"
   ></tr>
 </table>

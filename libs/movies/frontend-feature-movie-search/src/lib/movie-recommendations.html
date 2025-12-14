@@ -1,0 +1,6 @@
+{{recommendations()?.message}}
+<acme-movie-card-list
+  [movies]="recommendations()?.results ?? []"
+  [selectedGenre]="selectedGenre()"
+  [highlightSelected]="false"
+/>

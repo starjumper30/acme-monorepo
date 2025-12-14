@@ -52,22 +52,21 @@
   } @else if (moviesLoadingError()){ {{moviesLoadingError()?.message}} }
 </div>
 
-@if (viewType === 'card') {
 <acme-movie-card-list
+  [hidden]="viewType !== 'card'"
   [movies]="movies()"
   [selectedGenre]="selectedGenre.value ?? ''"
   [(selectedMovie)]="selectedMovie"
 />
-} @else if (viewType === 'table') {
 <acme-movie-table
+  [hidden]="viewType !== 'table'"
   [movies]="movies()"
   [selectedGenre]="selectedGenre.value ?? ''"
   [(selectedMovie)]="selectedMovie"
 />
-} @else if (viewType === 'recommendations') { {{recommendationsMessage()}}
-<acme-movie-card-list
-  [movies]="recommendations() ?? []"
+<acme-movie-recommendations
+  [active]="viewType === 'recommendations'"
+  [hidden]="viewType !== 'recommendations'"
+  [selectedMovie]="selectedMovie?.title ?? ''"
   [selectedGenre]="selectedGenre.value ?? ''"
-  [highlightSelected]="false"
 />
-}
