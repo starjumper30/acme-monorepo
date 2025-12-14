@@ -14,11 +14,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  EMPTY,
+  filter,
   map,
   of,
   startWith,
@@ -26,11 +29,16 @@ import {
   tap,
 } from 'rxjs';
 
-import { MoviesApi } from '@acme/movies/frontend-data-access-movies';
+import {
+  MoviesAiRecommendations,
+  MoviesApi,
+} from '@acme/movies/frontend-data-access-movies';
 import { MovieCardList } from '@acme/movies/ui-movie-card';
 import { MovieTable } from '@acme/movies/ui-movie-table';
 import {
+  EnrichedMovie,
   GenresQueryResponse,
+  Movie,
   MoviesQueryResponse,
   toEnrichedMovie,
 } from '@acme/movies/util-movies';
@@ -47,6 +55,7 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
     MatSelectModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatTooltipModule,
     MovieCardList,
     MovieTable,
   ],
@@ -55,6 +64,8 @@ import { apolloResultToSignals } from '@acme/shared/frontend-data-access-apollo'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieSearch {
+  private readonly aiService = inject(MoviesAiRecommendations);
+
   private readonly moviesAPI = inject(MoviesApi);
 
   private readonly genreSignals = apolloResultToSignals<GenresQueryResponse>(
@@ -128,7 +139,7 @@ export class MovieSearch {
   protected readonly isLoadingMovies = this.movieSignals.isLoading;
   protected readonly moviesLoadingError = this.movieSignals.error;
 
-  protected viewType: 'card' | 'table' = 'card';
+  protected viewType: 'card' | 'table' | 'recommendations' = 'card';
 
   constructor() {
     effect(() => {
@@ -140,5 +151,70 @@ export class MovieSearch {
 
   protected onPageChange({ pageIndex, pageSize }: PageEvent) {
     this.pageSettings.set({ page: pageIndex + 1, perPage: pageSize });
+  }
+
+  selectedMovie = 'Harry Potter'; // TODO movie selection from user
+  private currentRecommendationInputs = {
+    genre: '',
+    movie: '',
+  };
+
+  protected readonly recommendationsMessage = signal('');
+  protected readonly recommendedTitles = signal<string[]>([]);
+  protected readonly recommendations = toSignal(
+    toObservable(this.recommendedTitles).pipe(
+      filter((titles) => titles.length > 0),
+      switchMap((titles) =>
+        this.moviesAPI.moviesByTitlesSearch(titles).pipe(
+          tap(() =>
+            this.recommendationsMessage.set(
+              `Recommendations for genre ${this.currentRecommendationInputs.genre} that are similar to "${this.currentRecommendationInputs.movie}"`
+            )
+          ),
+          map((response) =>
+            response.data?.movies?.nodes?.map((movie) => toEnrichedMovie(movie))
+          ),
+          catchError((e) => {
+            console.log('Failed to load recommendations', e);
+            return EMPTY;
+          })
+        )
+      )
+    )
+  );
+
+  protected getRecommendations() {
+    if (this.selectedGenre.value && this.selectedMovie) {
+      this.viewType = 'recommendations';
+      const selections = {
+        genre: this.selectedGenre.value,
+        movie: this.selectedMovie,
+      };
+      if (
+        this.currentRecommendationInputs.genre === selections.genre &&
+        this.currentRecommendationInputs.movie === selections.movie &&
+        this.recommendedTitles().length
+      ) {
+        // don't call AI with same inputs as last time
+        return;
+      }
+      this.currentRecommendationInputs = { ...selections };
+      this.recommendationsMessage.set(
+        `Loading recommendations for genre ${selections.genre} that are similar to "${selections.movie}"...`
+      );
+      this.recommendedTitles.set([]);
+      this.aiService
+        .getRecommendations(this.selectedGenre.value, this.selectedMovie)
+        .then((titles) => {
+          console.log('AI recommendations', titles);
+          if (
+            this.currentRecommendationInputs.genre === selections.genre &&
+            this.currentRecommendationInputs.movie === selections.movie
+          ) {
+            console.log('Updating recommendations');
+            this.recommendedTitles.set(titles);
+          }
+        });
+    }
   }
 }

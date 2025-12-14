@@ -35,6 +35,15 @@
     >
       <mat-icon>table_view</mat-icon>
     </button>
+    <button
+      matTooltip="Select a genre and a movie to get recommendations from Gemini"
+      matIconButton
+      [disabled]="!selectedGenre.value || !selectedMovie"
+      [style.pointer-events]="'all'"
+      (click)="getRecommendations()"
+    >
+      <mat-icon>assistant</mat-icon>
+    </button>
   </div>
   @if(genresLoadingError()) {
   <mat-error>{{genresLoadingError()?.message}}</mat-error>
@@ -48,9 +57,14 @@
   [movies]="movies()"
   [selectedGenre]="selectedGenre.value ?? ''"
 />
-} @else {
+} @else if (viewType === 'table') {
 <acme-movie-table
   [movies]="movies()"
+  [selectedGenre]="selectedGenre.value ?? ''"
+/>
+} @else if (viewType === 'recommendations') { {{recommendationsMessage()}}
+<acme-movie-card-list
+  [movies]="recommendations() ?? []"
   [selectedGenre]="selectedGenre.value ?? ''"
 />
 }

@@ -34,6 +34,12 @@ export interface MoviesQueryResponse {
   };
 }
 
+export interface MoviesTitlesQueryResponse {
+  [key: string]: {
+    nodes: Movie[];
+  };
+}
+
 export interface GenresQueryResponse {
   genres: {
     nodes: Genre[];
@@ -47,12 +53,6 @@ export interface GenreQueryResponse {
 export interface MovieQueryResponse {
   movie: Movie | null;
 }
-
-export type MoviesApiQueryResponse =
-  | MoviesQueryResponse
-  | GenresQueryResponse
-  | GenreQueryResponse
-  | MovieQueryResponse;
 
 export interface PaginationInput {
   perPage?: number;
@@ -75,8 +75,3 @@ export type GenresQueryVariables = PaginationQueryVariables;
 export interface MoviesQueryVariables extends PaginationQueryVariables {
   where?: MovieFilterInput;
 }
-
-export type MoviesApiQueryVariables =
-  | MoviesQueryVariables
-  | GenresQueryVariables
-  | IdQueryVariables;

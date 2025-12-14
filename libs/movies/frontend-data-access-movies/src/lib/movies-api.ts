@@ -14,15 +14,20 @@ import { catchError, map, of, shareReplay, switchMap, take, tap } from 'rxjs';
 import {
   GenresQueryResponse,
   GenresQueryVariables,
+  Movie,
   MovieFilterInput,
-  MoviesApiQueryResponse,
-  MoviesApiQueryVariables,
   MoviesQueryResponse,
   MoviesQueryVariables,
+  MoviesTitlesQueryResponse,
 } from '@acme/movies/util-movies';
 
 import { MOVIES_API_URI } from './movies-api-injection-tokens';
-import { GENRES_GQL, MOVIES_GQL } from './movies-gql';
+import {
+  generateMoviesByTitlesGQL,
+  GENRES_GQL,
+  MOVIES_GQL,
+} from './movies-gql';
+import { OperationVariables } from '@apollo/client';
 
 @Injectable({
   providedIn: 'root',
@@ -67,10 +72,10 @@ export class MoviesApi {
     }
   }
 
-  customQuery<
-    T extends MoviesApiQueryResponse,
-    V extends MoviesApiQueryVariables
-  >(query: DocumentNode, variables: V) {
+  customQuery<T, V extends OperationVariables>(
+    query: DocumentNode,
+    variables: V
+  ) {
     return this.context.pipe(
       switchMap((context) =>
         this.apollo
@@ -111,5 +116,37 @@ export class MoviesApi {
 
   moviesByTitleSearch(search: string, page = 1, perPage = 10) {
     return this.movies({ search }, page, perPage);
+  }
+
+  moviesByTitlesSearch(titles: string[]) {
+    const query = generateMoviesByTitlesGQL(titles);
+    return this.customQuery<MoviesTitlesQueryResponse, object>(query, {
+      undefined,
+    }).pipe(
+      map((result) => {
+        if (result.data) {
+          const nodes: Movie[] = [];
+          for (let i = 1; i <= titles.length; i++) {
+            const movies = result.data?.[`title${i}`]?.nodes as
+              | Movie[]
+              | undefined;
+            if (movies?.length) {
+              nodes.push(...movies);
+            }
+          }
+
+          return {
+            ...result,
+            data: {
+              movies: {
+                nodes,
+              },
+            },
+          };
+        } else {
+          return result;
+        }
+      })
+    );
   }
 }

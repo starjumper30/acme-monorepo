@@ -46,3 +46,34 @@ export const GENRES_GQL = gql<GenresQueryResponse, void>`
     }
   }
 `;
+
+export function generateMoviesByTitlesGQL(titles: string[]) {
+  const fragments = titles
+    .map(
+      (title, idx) => `title${idx}: movies(where: { search: "${title}" }) {
+      nodes {
+        id
+        title
+        summary
+        posterUrl
+        genres {
+          title
+        }
+        bestRating
+        datePublished
+        directors
+        duration
+        mainActors
+        rating
+        ratingValue
+        worstRating
+        writers
+      }
+    }`
+    )
+    .join('\n');
+  return gql`query GetMoviesByTitles {
+    ${fragments}
+  }
+`;
+}

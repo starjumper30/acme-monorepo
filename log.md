@@ -126,15 +126,15 @@ duration, rating, etc.
 
 ### High-level tasks in order
 
-1. Implement and test angular service for movie search
+1. ✅ Implement and test angular service for movie search
    - get auth token
    - make a graphql call using apollo-angular client
      https://the-guild.dev/graphql/apollo-angular/docs/performance/server-side-rendering#server-side-rendering
      https://github.com/kamilkisiela/apollo-angular-ssr/tree/master
    - flesh out the api service with all the calls needed to implement the MVP
-2. Create a component to display movie search results by genre
-3. Add pagination to the movie search results component
-4. Finish populating more details on movie cards
+2. ✅ Create a component to display movie search results by genre
+3. ✅ Add pagination to the movie search results component
+4. ✅ Finish populating more details on movie cards
 
 ## Brainstorm Additional Features
 
@@ -148,10 +148,10 @@ duration, rating, etc.
 
 ### User-facing Features
 
-- Switch between card view and grid view
+- ✅ Switch between card view and grid view
+- AI integration for movie recommendations https://firebase.google.com/docs/ai-logic/get-started?api=dev#prereqs
 - Deep linking: put genre selection, view type, per page, and pageIndex into route params to enable linking directly to a particular state
 - click on movie to open full page route
-- AI integration for movie recommendations
 - User profile features
   - Favorites list
   - List to track movies they've seen
