@@ -7,7 +7,7 @@ I have included more detail about my thought processes and choices in the projec
 The most interesting part of this project was the AI integration, simply because that is new technology, whereas the other features are
 very typical of apps that I have developed in the past.
 
-The piece most significant to the implementation was the incorporation of the appolo-angular client library.
+The piece most significant to the implementation was the incorporation of the apollo-angular client library.
 This made the graphql implementation very smooth and robust, including a caching layer with minimal effort.
 
 ### Tell us what you are most pleased or proud of with your implementation.
@@ -173,9 +173,8 @@ duration, rating, etc.
 
 - ✅ Switch between card view and grid view
 - ✅ AI integration for movie recommendations https://firebase.google.com/docs/ai-logic/get-started?api=dev#prereqs
-  TODO
   - ✅ movie selection
-  - ✅ put firebase init in a better place? (a firebase service)
+  - ✅ put firebase init in a better place (a firebase service)
   - ✅ Refactor the mess of code in movie-search, maybe move some logic into a recommendations component
 - Deep linking: put genre selection, view type, per page, and pageIndex into route params to enable linking directly to a particular state
 - click on movie to open full page route
