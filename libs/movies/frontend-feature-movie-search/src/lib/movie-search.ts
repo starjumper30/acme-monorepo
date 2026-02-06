@@ -91,6 +91,10 @@ export class MovieSearch {
         this.pageSettings.update(({ perPage }) => ({ perPage, page: 1 }))
       ),
       switchMap((genre) =>
+        // This extra call is needed to get an accurate total because the API
+        // does not return the total number of movies in the paginated results.
+        // It only returns the total number of pages, so calling with a page size of 1 gives
+        // you the most accurate total number of movies.
         this.moviesAPI.movies(genre ? { genre } : undefined, 1, 1).pipe(
           map((response) => response.data?.movies?.pagination?.totalPages ?? 0),
           catchError((error) => {
