@@ -126,7 +126,7 @@ export class MoviesApi {
       map((result) => {
         if (result.data) {
           const nodes: Movie[] = [];
-          for (let i = 1; i <= titles.length; i++) {
+          for (let i = 0; i < titles.length; i++) {
             const movies = result.data?.[`title${i}`]?.nodes as
               | Movie[]
               | undefined;
