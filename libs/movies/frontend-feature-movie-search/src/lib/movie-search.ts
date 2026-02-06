@@ -4,7 +4,7 @@ import {
   computed,
   effect,
   inject,
-  signal,
+  linkedSignal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -24,7 +24,6 @@ import {
   of,
   startWith,
   switchMap,
-  tap,
 } from 'rxjs';
 
 import { MoviesApi } from '@acme/movies/frontend-data-access-movies';
@@ -77,19 +76,20 @@ export class MovieSearch {
     value: '',
     disabled: true,
   });
-  protected readonly pageSettings = signal({ page: 1, perPage: 9 });
 
   private readonly genreObservable = this.selectedGenre.valueChanges.pipe(
     startWith(''),
     distinctUntilChanged()
   );
 
+  private readonly genreSignal = toSignal(this.genreObservable);
+  protected readonly pageSettings = linkedSignal(() => {
+    this.genreSignal(); // We want the pageSettings to reset to default when the genre changes.
+    return { page: 1, perPage: 9 };
+  });
+
   protected readonly totalMovies = toSignal(
     this.genreObservable.pipe(
-      // reset to first page when genre changes
-      tap(() =>
-        this.pageSettings.update(({ perPage }) => ({ perPage, page: 1 }))
-      ),
       switchMap((genre) =>
         // This extra call is needed to get an accurate total because the API
         // does not return the total number of movies in the paginated results.
