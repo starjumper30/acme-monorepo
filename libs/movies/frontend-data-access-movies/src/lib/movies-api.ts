@@ -28,6 +28,7 @@ import {
   MOVIES_GQL,
 } from './movies-gql';
 import { OperationVariables } from '@apollo/client';
+import { pendingUntilEvent } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -65,7 +66,8 @@ export class MoviesApi {
         .get<{ token: string }>(`${this.moviesApiUrl}/auth/token`) // URL is defined in firebase environment variables
         .pipe(
           map((resp) => resp.token),
-          tap((token) => this.transferState.set(this.authTokenStateKey, token))
+          tap((token) => this.transferState.set(this.authTokenStateKey, token)),
+          pendingUntilEvent() // Prevents SSR serialization until this call is completed
         );
     } else {
       return of(this.transferState.get(this.authTokenStateKey, ''));
